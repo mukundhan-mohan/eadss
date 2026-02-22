@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { adminMe } from "@/lib/api";
+import LogoMark from "@/components/LogoMark";
 
 const baseItems = [
   { href: "/", label: "Home" },
@@ -33,8 +34,8 @@ export default function Navbar() {
     <header className="nav-shell">
       <div className="nav-wrap">
         <Link href="/" className="nav-brand">
-          <span className="nav-dot" />
-          <span>EADSS</span>
+          <LogoMark size={30} />
+          <span className="nav-brand-text">EADSS</span>
         </Link>
         <nav className="nav-links" aria-label="Primary">
           {baseItems.map((item) => (

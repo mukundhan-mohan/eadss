@@ -69,6 +69,11 @@ body {
   letter-spacing: 0.01em;
 }
 
+.nav-brand-text {
+  display: inline-block;
+  line-height: 1;
+}
+
 .nav-dot {
   width: 10px;
   height: 10px;
