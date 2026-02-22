@@ -8,6 +8,7 @@ import { adminLogout, adminMe } from "@/lib/api";
 export default function TryNowPage() {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
@@ -19,6 +20,7 @@ export default function TryNowPage() {
         const me = await adminMe();
         if (cancelled) return;
         setEmail(me.email);
+        setIsSuperAdmin(!!me.is_super_admin);
       } catch {
         if (!cancelled) router.replace("/login");
         return;
@@ -73,6 +75,11 @@ export default function TryNowPage() {
           <a href="#step4" className="onboarding-link">
             4. Validate
           </a>
+          {isSuperAdmin && (
+            <Link href="/super-admin/users" className="onboarding-link">
+              Super Admin: Users
+            </Link>
+          )}
         </nav>
         <button className="button-muted" onClick={onSignOut} disabled={signingOut}>
           {signingOut ? "Signing out..." : "Sign Out"}

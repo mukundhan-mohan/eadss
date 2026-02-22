@@ -236,3 +236,18 @@ export function adminRegisterOrg(payload: { org_id: string; name: string }) {
     body: JSON.stringify(payload),
   });
 }
+
+export type SuperAdminUser = {
+  id: string;
+  email: string;
+  is_active: boolean;
+  is_super_admin: boolean;
+  created_at: string;
+  password_hash: string;
+  memberships: { org_id: string; role: string }[];
+  api_keys: { org_id: string; name?: string | null; key_hash: string; is_active: boolean; created_at: string }[];
+};
+
+export function adminSuperUsers() {
+  return adminFetch<SuperAdminUser[]>(`/api/v1/admin/super/users`);
+}
