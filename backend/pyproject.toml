@@ -1,0 +1,27 @@
+[project]
+name = "eadss-backend"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.110.0",
+  "uvicorn[standard]>=0.27.0",
+  "pydantic>=2.6.0",
+  "pydantic-settings>=2.2.0",
+  "sqlalchemy>=2.0.25",
+  "psycopg[binary]>=3.1.18",
+  "redis>=5.0.1",
+  "celery[redis]>=5.3.6",
+  "alembic>=1.13.1",
+  "sentence-transformers>=2.7.0",
+  "bertopic>=0.16.0",
+  "umap-learn>=0.5.5",
+  "hdbscan>=0.8.33",
+  "scikit-learn>=1.4.0",
+  "numpy>=1.26.0",
+  "pyjwt>=2.8.0",
+  "passlib[bcrypt]>=1.7.4",
+  "bcrypt==4.0.1",
+]
+
+[tool.uv]
+dev-dependencies = []
