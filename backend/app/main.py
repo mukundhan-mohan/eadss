@@ -2,15 +2,26 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.router import api_router
 import time
+import os
 from starlette.middleware.base import BaseHTTPMiddleware
 from app.db.session import SessionLocal
 from app.db.models.usage import UsageEvent
 
 app = FastAPI(title="EADSS API")
 
+default_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://app.eadss.com",
+    "https://eadss.com",
+    "https://www.eadss.com",
+]
+env_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
+allow_origins = env_origins or default_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=allow_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
