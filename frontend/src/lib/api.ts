@@ -209,21 +209,21 @@ export async function adminFetch<T>(path: string, init: RequestInit = {}): Promi
 }
 
 export function adminLogin(email: string, password: string) {
-  return adminFetch<{ id: string; email: string }>(`/api/v1/admin/login`, {
+  return adminFetch<{ id: string; email: string; is_super_admin: boolean }>(`/api/v1/admin/login`, {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
 }
 
 export function adminRegister(email: string, password: string) {
-  return adminFetch<{ id: string; email: string }>(`/api/v1/admin/register`, {
+  return adminFetch<{ id: string; email: string; is_super_admin: boolean }>(`/api/v1/admin/register`, {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
 }
 
 export function adminMe() {
-  return adminFetch<{ id: string; email: string }>(`/api/v1/admin/me`);
+  return adminFetch<{ id: string; email: string; is_super_admin: boolean }>(`/api/v1/admin/me`);
 }
 
 export function adminLogout() {

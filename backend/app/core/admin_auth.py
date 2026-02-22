@@ -65,3 +65,9 @@ def require_admin(
     if not user or not user.is_active:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not logged in")
     return user
+
+
+def require_super_admin(user: AdminUser = Depends(require_admin)) -> AdminUser:
+    if not user.is_super_admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Super admin access required")
+    return user

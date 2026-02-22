@@ -6,6 +6,8 @@ import os
 from starlette.middleware.base import BaseHTTPMiddleware
 from app.db.session import SessionLocal
 from app.db.models.usage import UsageEvent
+from app.db.models.admin_user import AdminUser
+from app.core.admin_auth import hash_password
 
 app = FastAPI(title="EADSS API")
 
@@ -26,6 +28,45 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+def ensure_super_admin_bootstrap() -> None:
+    email = os.getenv("SUPER_ADMIN_EMAIL", "").strip().lower()
+    password = os.getenv("SUPER_ADMIN_PASSWORD", "")
+    if not email or not password:
+        return
+
+    db = SessionLocal()
+    try:
+        user = db.query(AdminUser).filter(AdminUser.email == email).first()
+        if user:
+            changed = False
+            if not user.is_super_admin:
+                user.is_super_admin = True
+                changed = True
+            if not user.is_active:
+                user.is_active = True
+                changed = True
+            if changed:
+                db.commit()
+            return
+
+        db.add(
+            AdminUser(
+                email=email,
+                password_hash=hash_password(password),
+                is_active=True,
+                is_super_admin=True,
+            )
+        )
+        db.commit()
+    finally:
+        db.close()
+
+
+@app.on_event("startup")
+def bootstrap_super_admin() -> None:
+    ensure_super_admin_bootstrap()
 
 class UsageMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
