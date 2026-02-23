@@ -1,78 +1,30 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import EmotionStackedArea from "@/components/charts/EmotionStackedArea";
-import { getDocuments, getLatestInference } from "@/lib/api";
 
 type Point = { day: string; [emotion: string]: string | number };
 
+const samplePoints: Point[] = [
+  { day: "2026-02-10", anger: 4, anxiety: 6, joy: 3, neutral: 8 },
+  { day: "2026-02-11", anger: 3, anxiety: 5, joy: 4, neutral: 9 },
+  { day: "2026-02-12", anger: 5, anxiety: 7, joy: 2, neutral: 8 },
+  { day: "2026-02-13", anger: 7, anxiety: 8, joy: 2, neutral: 7 },
+  { day: "2026-02-14", anger: 6, anxiety: 6, joy: 3, neutral: 8 },
+  { day: "2026-02-15", anger: 4, anxiety: 5, joy: 5, neutral: 10 },
+  { day: "2026-02-16", anger: 3, anxiety: 4, joy: 6, neutral: 11 },
+  { day: "2026-02-17", anger: 2, anxiety: 4, joy: 7, neutral: 11 },
+  { day: "2026-02-18", anger: 3, anxiety: 5, joy: 6, neutral: 10 },
+  { day: "2026-02-19", anger: 5, anxiety: 7, joy: 4, neutral: 9 },
+  { day: "2026-02-20", anger: 6, anxiety: 8, joy: 3, neutral: 8 },
+  { day: "2026-02-21", anger: 4, anxiety: 6, joy: 5, neutral: 9 },
+  { day: "2026-02-22", anger: 3, anxiety: 4, joy: 7, neutral: 10 },
+  { day: "2026-02-23", anger: 2, anxiety: 3, joy: 8, neutral: 11 },
+];
+
 export default function DashboardPage() {
-  const [loading, setLoading] = useState(false);
-  const [points, setPoints] = useState<Point[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [orgId, setOrgId] = useState("demo");
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const selectedOrg =
-          typeof window !== "undefined"
-            ? localStorage.getItem("eadss_active_org") || "demo"
-            : "demo";
-        if (!cancelled) setOrgId(selectedOrg);
-
-        const since = new Date();
-        since.setDate(since.getDate() - 14);
-
-        const docsRes = await getDocuments({
-          org_id: selectedOrg,
-          limit: 200,
-          offset: 0,
-          since: since.toISOString(),
-          until: new Date().toISOString(),
-        });
-
-        const pairs = await Promise.all(
-          docsRes.items.map(async (d) => {
-            const inf = await getLatestInference(d.id);
-            return { doc: d, inf: inf.latest };
-          })
-        );
-
-        const byDay: Record<string, Point> = {};
-
-        for (const p of pairs) {
-          const ts = p.doc.timestamp ?? p.doc.created_at;
-          const day = String(ts).slice(0, 10);
-          const labels: string[] = p.inf?.emotion_labels?.length ? p.inf.emotion_labels : ["no_inference"];
-
-          byDay[day] ??= { day };
-          for (const emo of labels) {
-            byDay[day][emo] = Number(byDay[day][emo] ?? 0) + 1;
-          }
-        }
-
-        const nextPoints = Object.values(byDay).sort((a, b) => String(a.day).localeCompare(String(b.day))) as Point[];
-
-        if (!cancelled) setPoints(nextPoints);
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? String(e));
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const points = samplePoints;
 
   const totals = useMemo(() => {
     const days = points.length;
@@ -95,7 +47,7 @@ export default function DashboardPage() {
       <section className="page-header">
         <div>
           <h1 className="page-title">Demo Dashboard</h1>
-          <p className="page-subtitle">14-day emotion volume trend for organization `{orgId}`.</p>
+          <p className="page-subtitle">Public sample data for a 14-day emotion trend demo.</p>
         </div>
         <div className="nav-inline">
           <Link className="button-muted" href="/alerts">
@@ -125,12 +77,14 @@ export default function DashboardPage() {
         </article>
       </section>
 
-      {error && <div className="error">{error}</div>}
+      <div className="notice">
+        This page uses sample public data for product demonstration. No login or API key required.
+      </div>
 
       <section className="panel stack">
         <div className="split">
           <h2 className="feature-title">Emotion Trends</h2>
-          <span className="meta">{loading ? "Refreshing data..." : "Live from API"}</span>
+          <span className="meta">Sample dataset</span>
         </div>
         <EmotionStackedArea data={points} />
       </section>
