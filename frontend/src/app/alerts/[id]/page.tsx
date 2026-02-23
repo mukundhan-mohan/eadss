@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
-import { getAlert, AlertDetail } from "@/lib/api";
+import { demoAlertDetails, demoAlerts } from "@/app/alerts/demoData";
 
 function HighlightedText({ text, highlights }: { text: string; highlights?: any[] | null }) {
   if (!highlights?.length) return <span>{text}</span>;
@@ -36,25 +36,8 @@ function HighlightedText({ text, highlights }: { text: string; highlights?: any[
 }
 
 export default function AlertDetailPage({ params }: { params: { id: string } }) {
-  const [data, setData] = useState<AlertDetail | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      setError(null);
-      try {
-        const res = await getAlert(params.id);
-        if (!cancelled) setData(res);
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? String(e));
-      }
-    }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [params.id]);
+  const data = useMemo(() => demoAlertDetails[params.id] ?? null, [params.id]);
+  const error = data ? null : "Demo alert not found.";
 
   const alert = data?.alert;
 
@@ -72,6 +55,7 @@ export default function AlertDetailPage({ params }: { params: { id: string } }) 
 
       {error && <div className="error">{error}</div>}
       {!data && !error && <div className="notice">Loading alert detail...</div>}
+      <div className="notice">This alert detail page uses sample public data.</div>
 
       {alert && (
         <section className="panel stack">
@@ -113,6 +97,23 @@ export default function AlertDetailPage({ params }: { params: { id: string } }) 
           </div>
         </section>
       )}
+
+      <section className="panel stack">
+        <h2 className="feature-title">Other Demo Alerts</h2>
+        <div className="list">
+          {demoAlerts
+            .filter((a) => a.id !== params.id)
+            .map((a) => (
+              <Link key={a.id} href={`/alerts/${a.id}`} className="list-item">
+                <div className="split">
+                  <strong>{a.alert_type}</strong>
+                  <span className="meta">{a.day}</span>
+                </div>
+                <div className="meta">severity {a.severity}</div>
+              </Link>
+            ))}
+        </div>
+      </section>
     </main>
   );
 }

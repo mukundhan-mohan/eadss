@@ -1,46 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import FiltersBar from "@/components/FiltersBar";
-import { listAlerts, AlertOut } from "@/lib/api";
+import { demoAlerts } from "@/app/alerts/demoData";
 
 export default function AlertsPage() {
-  const [orgId, setOrgId] = useState("demo");
+  const [orgId, setOrgId] = useState("sample-org");
   const [teamId, setTeamId] = useState("");
   const [since, setSince] = useState(() => new Date().toISOString().slice(0, 10));
   const [until, setUntil] = useState(() => new Date().toISOString().slice(0, 10));
-
-  const [alerts, setAlerts] = useState<AlertOut[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await listAlerts({ org_id: orgId || undefined, team_id: teamId || undefined, limit: 100 });
-        if (!cancelled) setAlerts(res);
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? String(e));
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [orgId, teamId, since, until]);
+  const alerts = useMemo(
+    () =>
+      demoAlerts.filter((a) => {
+        const orgOk = !orgId.trim() || (a.org_id ?? "").toLowerCase().includes(orgId.trim().toLowerCase());
+        const teamOk = !teamId.trim() || (a.team_id ?? "").toLowerCase().includes(teamId.trim().toLowerCase());
+        const sinceOk = !since || a.day >= since;
+        const untilOk = !until || a.day <= until;
+        return orgOk && teamOk && sinceOk && untilOk;
+      }),
+    [orgId, teamId, since, until]
+  );
 
   return (
     <main className="app-shell stack">
       <section className="page-header">
         <div>
           <h1 className="page-title">Alerts</h1>
-          <p className="page-subtitle">Investigate anomaly events and evidence across teams and channels.</p>
+          <p className="page-subtitle">Public demo anomaly events and explainable evidence cards.</p>
         </div>
         <div className="nav-inline">
           <Link className="button-muted" href="/dashboard">
@@ -65,12 +52,12 @@ export default function AlertsPage() {
         }}
       />
 
-      {error && <div className="error">{error}</div>}
+      <div className="notice">This page uses sample public alerts for product demonstration.</div>
 
       <section className="panel stack">
         <div className="split">
           <h2 className="feature-title">Alert Feed</h2>
-          <span className="meta">{loading ? "Loading..." : `${alerts.length} alerts`}</span>
+          <span className="meta">{`${alerts.length} alerts`}</span>
         </div>
 
         <div className="list">
@@ -87,7 +74,7 @@ export default function AlertsPage() {
             </Link>
           ))}
 
-          {alerts.length === 0 && !loading && (
+          {alerts.length === 0 && (
             <div className="empty">No alerts available for this filter set.</div>
           )}
         </div>
