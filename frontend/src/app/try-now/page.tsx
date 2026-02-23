@@ -21,7 +21,9 @@ export default function TryNowPage() {
         if (cancelled) return;
         setEmail(me.email);
         setIsSuperAdmin(!!me.is_super_admin);
+        localStorage.setItem("eadss_admin_logged_in", "1");
       } catch {
+        localStorage.removeItem("eadss_admin_logged_in");
         if (!cancelled) router.replace("/login");
         return;
       } finally {
@@ -39,6 +41,7 @@ export default function TryNowPage() {
     setError(null);
     try {
       await adminLogout();
+      localStorage.removeItem("eadss_admin_logged_in");
       router.replace("/login");
     } catch (e: any) {
       setError(e?.message ?? String(e));

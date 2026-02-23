@@ -17,12 +17,21 @@ export default function Navbar() {
 
   useEffect(() => {
     let cancelled = false;
+    if (typeof window !== "undefined" && localStorage.getItem("eadss_admin_logged_in") === "1") {
+      setTryNowHref("/try-now");
+    }
     (async () => {
       try {
         await adminMe();
         if (!cancelled) setTryNowHref("/try-now");
       } catch {
-        if (!cancelled) setTryNowHref("/login");
+        if (!cancelled) {
+          if (typeof window !== "undefined" && localStorage.getItem("eadss_admin_logged_in") === "1") {
+            setTryNowHref("/try-now");
+          } else {
+            setTryNowHref("/login");
+          }
+        }
       }
     })();
     return () => {

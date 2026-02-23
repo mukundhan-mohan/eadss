@@ -7,9 +7,9 @@ import { adminLogin, adminRegister } from "@/lib/api";
 export default function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<"signin" | "register">("signin");
-  const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState("admin123");
-  const [confirmPassword, setConfirmPassword] = useState("admin123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -18,6 +18,7 @@ export default function LoginPage() {
     setError(null);
     try {
       await adminLogin(email, password);
+      localStorage.setItem("eadss_admin_logged_in", "1");
       router.push("/try-now");
     } catch (e: any) {
       setError(e?.message ?? String(e));
@@ -36,6 +37,7 @@ export default function LoginPage() {
     setError(null);
     try {
       await adminRegister(email, password);
+      localStorage.setItem("eadss_admin_logged_in", "1");
       router.push("/try-now");
     } catch (e: any) {
       setError(e?.message ?? String(e));
