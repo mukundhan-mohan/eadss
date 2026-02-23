@@ -454,6 +454,15 @@ pre {
   font-size: 0.84rem;
 }
 
+.app-footer {
+  margin: 8px auto 20px;
+  max-width: 1160px;
+  padding: 0 20px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  text-align: center;
+}
+
 @keyframes rise-in {
   from {
     opacity: 0;

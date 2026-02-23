@@ -30,6 +30,7 @@ export default function RootLayout({
       <body className={`${display.variable} ${body.variable}`}>
         <Navbar />
         {children}
+        <footer className="app-footer">All rights reserved by EADSS Ltd</footer>
       </body>
     </html>
   );
