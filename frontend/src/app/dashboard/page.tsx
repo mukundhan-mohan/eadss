@@ -11,6 +11,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [points, setPoints] = useState<Point[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [orgId, setOrgId] = useState("demo");
 
   useEffect(() => {
     let cancelled = false;
@@ -20,11 +21,17 @@ export default function DashboardPage() {
       setError(null);
 
       try {
+        const selectedOrg =
+          typeof window !== "undefined"
+            ? localStorage.getItem("eadss_active_org") || "demo"
+            : "demo";
+        if (!cancelled) setOrgId(selectedOrg);
+
         const since = new Date();
         since.setDate(since.getDate() - 14);
 
         const docsRes = await getDocuments({
-          org_id: "demo",
+          org_id: selectedOrg,
           limit: 200,
           offset: 0,
           since: since.toISOString(),
@@ -88,7 +95,7 @@ export default function DashboardPage() {
       <section className="page-header">
         <div>
           <h1 className="page-title">Demo Dashboard</h1>
-          <p className="page-subtitle">14-day emotion volume trend for sample organization `demo`.</p>
+          <p className="page-subtitle">14-day emotion volume trend for organization `{orgId}`.</p>
         </div>
         <div className="nav-inline">
           <Link className="button-muted" href="/alerts">

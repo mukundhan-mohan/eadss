@@ -86,6 +86,8 @@ export default function RegisterPage() {
     try {
       const r = await adminRegisterOrg({ org_id: orgId.trim(), name: name.trim() });
       setResult(r);
+      localStorage.setItem(`eadss_api_key:${r.org_id}`, r.api_key);
+      localStorage.setItem("eadss_active_org", r.org_id);
       const next: OrgLogEntry[] = [
         { ...r, created_at: new Date().toISOString() },
         ...logs.filter((l) => l.org_id !== r.org_id),
