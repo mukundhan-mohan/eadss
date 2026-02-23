@@ -132,10 +132,6 @@ export default function HomePage() {
             API Docs
           </Link>
         </div>
-        <p className="footer-note">
-          Deploy this frontend with environment variables `NEXT_PUBLIC_API_BASE_URL` and
-          `NEXT_PUBLIC_API_KEY` configured for your production backend.
-        </p>
       </section>
 
       <section className="panel stack">
