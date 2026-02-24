@@ -1,52 +1,41 @@
 import { AlertDetail, AlertOut } from "@/lib/api";
 
-export const demoAlerts: AlertOut[] = [
-  {
-    id: "demo-1",
-    created_at: "2026-02-23T09:30:00Z",
-    day: "2026-02-23",
-    alert_type: "emotion_spike",
-    severity: "high",
-    org_id: "sample-org",
-    team_id: "support",
-    channel: "ticket",
-    metric: "anger_count",
-    value: 18,
-    baseline: { mean: 6.2, stddev: 2.1, zscore: 5.6 },
-    message: "Anger mentions spiked 3x above baseline in support tickets.",
-  },
-  {
-    id: "demo-2",
-    created_at: "2026-02-22T14:10:00Z",
-    day: "2026-02-22",
-    alert_type: "anxiety_rise",
-    severity: "medium",
-    org_id: "sample-org",
-    team_id: "payments",
-    channel: "nps",
-    metric: "anxiety_count",
-    value: 11,
-    baseline: { mean: 5.8, stddev: 1.9, zscore: 2.7 },
-    message: "Anxiety trend increased in payment-related NPS comments.",
-  },
-  {
-    id: "demo-3",
-    created_at: "2026-02-21T18:45:00Z",
-    day: "2026-02-21",
-    alert_type: "negative_sentiment_cluster",
-    severity: "low",
-    org_id: "sample-org",
-    team_id: "onboarding",
-    channel: "survey",
-    metric: "negative_cluster_size",
-    value: 7,
-    baseline: { mean: 4.0, stddev: 1.5, zscore: 2.0 },
-    message: "Small cluster of negative onboarding survey responses detected.",
-  },
+const teams = ["support", "payments", "onboarding", "retention", "shipping", "billing"];
+const channels = ["ticket", "nps", "survey", "chat"];
+const kinds = [
+  { alert_type: "emotion_spike", metric: "anger_count" },
+  { alert_type: "anxiety_rise", metric: "anxiety_count" },
+  { alert_type: "negative_sentiment_cluster", metric: "negative_cluster_size" },
+  { alert_type: "escalation_risk", metric: "escalation_count" },
 ];
 
+export const demoAlerts: AlertOut[] = Array.from({ length: 24 }).map((_, idx) => {
+  const day = 23 - (idx % 14);
+  const k = kinds[idx % kinds.length];
+  const severity: AlertOut["severity"] = idx % 7 === 0 ? "high" : idx % 3 === 0 ? "medium" : "low";
+  const value = 6 + (idx % 10) + (severity === "high" ? 7 : severity === "medium" ? 4 : 1);
+  const mean = 3.8 + (idx % 5) * 0.7;
+  const stddev = 1.3 + (idx % 4) * 0.4;
+  const zscore = Number(((value - mean) / stddev).toFixed(1));
+
+  return {
+    id: `demo-${idx + 1}`,
+    created_at: `2026-02-${String(day).padStart(2, "0")}T${String(8 + (idx % 10)).padStart(2, "0")}:15:00Z`,
+    day: `2026-02-${String(day).padStart(2, "0")}`,
+    alert_type: k.alert_type,
+    severity,
+    org_id: "sample-org",
+    team_id: teams[idx % teams.length],
+    channel: channels[idx % channels.length],
+    metric: k.metric,
+    value,
+    baseline: { mean, stddev, zscore },
+    message: `${k.alert_type.replaceAll("_", " ")} detected for ${teams[idx % teams.length]} on ${channels[idx % channels.length]}.`,
+  };
+});
+
 export const demoAlertDetails: Record<string, AlertDetail> = {
-  "demo-1": {
+  [demoAlerts[0].id]: {
     alert: demoAlerts[0],
     evidence: [
       {
@@ -74,7 +63,7 @@ export const demoAlertDetails: Record<string, AlertDetail> = {
       },
     ],
   },
-  "demo-2": {
+  [demoAlerts[1].id]: {
     alert: demoAlerts[1],
     evidence: [
       {
@@ -89,7 +78,7 @@ export const demoAlertDetails: Record<string, AlertDetail> = {
       },
     ],
   },
-  "demo-3": {
+  [demoAlerts[2].id]: {
     alert: demoAlerts[2],
     evidence: [],
   },

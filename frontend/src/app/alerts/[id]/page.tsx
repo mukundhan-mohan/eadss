@@ -36,7 +36,13 @@ function HighlightedText({ text, highlights }: { text: string; highlights?: any[
 }
 
 export default function AlertDetailPage({ params }: { params: { id: string } }) {
-  const data = useMemo(() => demoAlertDetails[params.id] ?? null, [params.id]);
+  const data = useMemo(() => {
+    const exact = demoAlertDetails[params.id];
+    if (exact) return exact;
+    const alert = demoAlerts.find((a) => a.id === params.id);
+    if (!alert) return null;
+    return { alert, evidence: [] };
+  }, [params.id]);
   const error = data ? null : "Demo alert not found.";
 
   const alert = data?.alert;
