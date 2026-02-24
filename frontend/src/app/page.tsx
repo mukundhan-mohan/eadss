@@ -83,16 +83,16 @@ export default function HomePage() {
 
   return (
     <main className="app-shell stack">
-      <section className="announce-ribbon">Now live: public product demo dashboard and alerts experience.</section>
+      <section className="announce-ribbon">AI-powered product demo is now live across dashboard and alerts.</section>
 
       <section className="hero-card stack">
         <div className="hero-grid">
           <div className="stack">
-            <span className="badge">Emotion Intelligence Platform</span>
+            <span className="badge">AI Emotion Intelligence Platform</span>
             <h1 className="page-title">Emotionally-Aware Decision Support System</h1>
             <p className="hero-copy">
-              Convert unstructured tickets, surveys, and complaints into explainable decisions with
-              emotion analytics, trend intelligence, and actionable alerts.
+              Convert unstructured tickets, surveys, and complaints into explainable AI decisions
+              with emotion analytics, trend intelligence, and actionable alerts.
             </p>
             <div className="row">
               <Link className="button" href={isAuthed ? "/try-now" : "/login"}>

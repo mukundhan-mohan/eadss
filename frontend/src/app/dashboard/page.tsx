@@ -2,6 +2,26 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import EmotionStackedArea from "@/components/charts/EmotionStackedArea";
 
 type Point = { day: string; [emotion: string]: string | number };
@@ -23,31 +43,81 @@ const samplePoints: Point[] = [
   { day: "2026-02-23", anger: 2, anxiety: 3, joy: 8, neutral: 11 },
 ];
 
+const chartPalette = ["#0f6fa8", "#d05a1e", "#18794e", "#5e6f82", "#8c5228", "#5a87ab"];
+
 export default function DashboardPage() {
   const points = samplePoints;
 
-  const totals = useMemo(() => {
+  const insights = useMemo(() => {
     const days = points.length;
     let docs = 0;
     const emotions = new Set<string>();
+    const emotionTotals: Record<string, number> = {};
+    const workloadTrend: Array<{ day: string; total: number; pressure: number; recovery: number }> = [];
+    const weeklyMap: Record<string, { dayLabel: string; pressure: number; positive: number; volume: number }> = {};
 
     for (const p of points) {
+      const anger = Number(p.anger ?? 0);
+      const anxiety = Number(p.anxiety ?? 0);
+      const joy = Number(p.joy ?? 0);
+      const neutral = Number(p.neutral ?? 0);
+      const total = anger + anxiety + joy + neutral;
+      const pressure = anger + anxiety;
+      const recovery = joy + neutral;
+
+      workloadTrend.push({ day: String(p.day), total, pressure, recovery });
+
+      const dayLabel = new Date(`${p.day}T00:00:00Z`).toLocaleDateString("en-US", { weekday: "short" });
+      weeklyMap[dayLabel] ??= { dayLabel, pressure: 0, positive: 0, volume: 0 };
+      weeklyMap[dayLabel].pressure += pressure;
+      weeklyMap[dayLabel].positive += joy;
+      weeklyMap[dayLabel].volume += total;
+
       for (const [k, v] of Object.entries(p)) {
         if (k === "day") continue;
         emotions.add(k);
-        docs += Number(v ?? 0);
+        const val = Number(v ?? 0);
+        docs += val;
+        emotionTotals[k] = (emotionTotals[k] ?? 0) + val;
       }
     }
 
-    return { days, docs, emotions: emotions.size };
+    const emotionMix = Object.entries(emotionTotals)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value);
+
+    const avgDailyLoad = Math.round(docs / Math.max(1, days));
+    const peakDay = workloadTrend.reduce((prev, cur) => (cur.total > prev.total ? cur : prev), workloadTrend[0]);
+    const riskIndex = Math.round((workloadTrend.reduce((sum, row) => sum + row.pressure, 0) / Math.max(1, docs)) * 100);
+    const weeklyPattern = Object.values(weeklyMap);
+    const teamSignalProfile = [
+      { metric: "Support Stress", value: Math.round((emotionTotals.anger ?? 0) * 1.7 + (emotionTotals.anxiety ?? 0)) },
+      { metric: "Customer Recovery", value: Math.round((emotionTotals.joy ?? 0) * 1.8 + (emotionTotals.neutral ?? 0) * 0.7) },
+      { metric: "Escalation Risk", value: Math.round(((emotionTotals.anger ?? 0) + (emotionTotals.anxiety ?? 0)) * 1.5) },
+      { metric: "Signal Stability", value: Math.max(10, 120 - Math.round(((emotionTotals.anger ?? 0) + (emotionTotals.anxiety ?? 0)) * 2.1)) },
+      { metric: "Service Confidence", value: Math.round((emotionTotals.joy ?? 0) * 1.2 + (emotionTotals.neutral ?? 0)) },
+    ];
+
+    return {
+      days,
+      docs,
+      emotions: emotions.size,
+      emotionMix,
+      workloadTrend,
+      weeklyPattern,
+      teamSignalProfile,
+      avgDailyLoad,
+      peakDay,
+      riskIndex,
+    };
   }, [points]);
 
   return (
     <main className="app-shell stack">
       <section className="demo-header stack">
-        <div className="announce-ribbon">Public product demo</div>
+        <div className="announce-ribbon">Public AI product demo</div>
         <p className="meta">
-          This dashboard is intentionally public and uses curated sample data for showcasing the EADSS platform.
+          This dashboard is intentionally public and uses curated sample data for showcasing EADSS AI decision intelligence.
         </p>
       </section>
 
@@ -72,20 +142,32 @@ export default function DashboardPage() {
       <section className="kpi-grid">
         <article className="kpi-card">
           <div className="kpi-label">Loaded Days</div>
-          <div className="kpi-value">{totals.days}</div>
+          <div className="kpi-value">{insights.days}</div>
         </article>
         <article className="kpi-card">
           <div className="kpi-label">Total Inferred Events</div>
-          <div className="kpi-value">{totals.docs}</div>
+          <div className="kpi-value">{insights.docs}</div>
         </article>
         <article className="kpi-card">
           <div className="kpi-label">Emotion Categories</div>
-          <div className="kpi-value">{totals.emotions}</div>
+          <div className="kpi-value">{insights.emotions}</div>
+        </article>
+        <article className="kpi-card">
+          <div className="kpi-label">Avg Daily Volume</div>
+          <div className="kpi-value">{insights.avgDailyLoad}</div>
+        </article>
+        <article className="kpi-card">
+          <div className="kpi-label">Peak Day</div>
+          <div className="kpi-value">{insights.peakDay?.day ?? "-"}</div>
+        </article>
+        <article className="kpi-card">
+          <div className="kpi-label">Pressure Index</div>
+          <div className="kpi-value">{insights.riskIndex}%</div>
         </article>
       </section>
 
       <div className="panel-soft">
-        This page uses sample public data for product demonstration. No login or API key required.
+        This page uses sample public data for AI product demonstration. No login or API key required.
       </div>
 
       <section className="panel stack">
@@ -94,6 +176,86 @@ export default function DashboardPage() {
           <span className="meta">Sample dataset</span>
         </div>
         <EmotionStackedArea data={points} />
+      </section>
+
+      <section className="dashboard-grid">
+        <article className="panel stack">
+          <div className="split">
+            <h2 className="feature-title">Emotion Mix Distribution</h2>
+            <span className="meta">Share of signal by emotion</span>
+          </div>
+          <div className="chart-wrap-sm">
+            <ResponsiveContainer>
+              <PieChart>
+                <Pie data={insights.emotionMix} dataKey="value" nameKey="name" innerRadius={56} outerRadius={92} paddingAngle={2}>
+                  {insights.emotionMix.map((entry, idx) => (
+                    <Cell key={entry.name} fill={chartPalette[idx % chartPalette.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </article>
+
+        <article className="panel stack">
+          <div className="split">
+            <h2 className="feature-title">Operational Pressure vs Recovery</h2>
+            <span className="meta">Daily emotional load balance</span>
+          </div>
+          <div className="chart-wrap-sm">
+            <ResponsiveContainer>
+              <LineChart data={insights.workloadTrend} margin={{ top: 12, right: 14, left: 0, bottom: 6 }}>
+                <CartesianGrid strokeDasharray="4 4" stroke="#d8e7f2" />
+                <XAxis dataKey="day" tick={{ fill: "#48657a", fontSize: 12 }} />
+                <YAxis tick={{ fill: "#48657a", fontSize: 12 }} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="pressure" stroke="#d05a1e" strokeWidth={2.2} dot={false} />
+                <Line type="monotone" dataKey="recovery" stroke="#18794e" strokeWidth={2.2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </article>
+
+        <article className="panel stack">
+          <div className="split">
+            <h2 className="feature-title">Weekday Signal Pattern</h2>
+            <span className="meta">Where load tends to cluster</span>
+          </div>
+          <div className="chart-wrap-sm">
+            <ResponsiveContainer>
+              <BarChart data={insights.weeklyPattern} margin={{ top: 12, right: 14, left: 0, bottom: 6 }}>
+                <CartesianGrid strokeDasharray="4 4" stroke="#d8e7f2" />
+                <XAxis dataKey="dayLabel" tick={{ fill: "#48657a", fontSize: 12 }} />
+                <YAxis tick={{ fill: "#48657a", fontSize: 12 }} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="pressure" fill="#0f6fa8" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="positive" fill="#18794e" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </article>
+
+        <article className="panel stack">
+          <div className="split">
+            <h2 className="feature-title">Team Signal Profile</h2>
+            <span className="meta">Composite KPI model (demo)</span>
+          </div>
+          <div className="chart-wrap-sm">
+            <ResponsiveContainer>
+              <RadarChart data={insights.teamSignalProfile}>
+                <PolarGrid stroke="#c6dbeb" />
+                <PolarAngleAxis dataKey="metric" tick={{ fill: "#48657a", fontSize: 12 }} />
+                <PolarRadiusAxis tick={{ fill: "#6b8193", fontSize: 10 }} />
+                <Radar dataKey="value" stroke="#0f6fa8" fill="#0f6fa8" fillOpacity={0.36} />
+                <Tooltip />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        </article>
       </section>
     </main>
   );

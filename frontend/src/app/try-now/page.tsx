@@ -94,7 +94,7 @@ export default function TryNowPage() {
           <div className="announce-ribbon">Guided onboarding for production integration</div>
           <h1 className="page-title">Integration Procedure</h1>
           <p className="page-subtitle">
-            Follow this flow to generate an access token and start sending data from your codebase.
+            Follow this flow to generate an access token and start sending data to the EADSS AI platform.
           </p>
           {error && <div className="error">{error}</div>}
         </div>
