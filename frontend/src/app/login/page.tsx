@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminLogin, adminRegister } from "@/lib/api";
 
@@ -12,6 +12,18 @@ export default function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const passwordChecks = useMemo(
+    () => [
+      { label: "At least 8 characters", ok: password.length >= 8 },
+      { label: "At least one uppercase letter", ok: /[A-Z]/.test(password) },
+      { label: "At least one lowercase letter", ok: /[a-z]/.test(password) },
+      { label: "At least one number", ok: /[0-9]/.test(password) },
+      { label: "At least one special character", ok: /[^A-Za-z0-9]/.test(password) },
+      { label: "Password and confirm password match", ok: !!password && password === confirmPassword },
+    ],
+    [password, confirmPassword]
+  );
 
   function isValidEmail(value: string) {
     return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(value.trim());
@@ -115,9 +127,21 @@ export default function LoginPage() {
                 <span>Confirm Password</span>
                 <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
               </label>
-              <div className="meta">
-                Use 8+ chars with uppercase, lowercase, number, and special character.
-              </div>
+              <details>
+                <summary className="meta" style={{ cursor: "pointer" }}>
+                  Password checks ({passwordChecks.filter((c) => c.ok).length}/{passwordChecks.length})
+                </summary>
+                <div className="list" style={{ marginTop: 8 }}>
+                  {passwordChecks.map((check) => (
+                    <div key={check.label} className="list-item split">
+                      <span>{check.label}</span>
+                      <strong style={{ color: check.ok ? "#18794e" : "#b73239" }}>
+                        {check.ok ? "Matched" : "Mismatch"}
+                      </strong>
+                    </div>
+                  ))}
+                </div>
+              </details>
             </>
           )}
 
