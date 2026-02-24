@@ -13,11 +13,27 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  function isValidEmail(value: string) {
+    return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(value.trim());
+  }
+
+  function validateRegisterInput() {
+    const trimmedEmail = email.trim();
+    if (!isValidEmail(trimmedEmail)) return "Enter a valid email address.";
+    if (password.length < 8) return "Password must be at least 8 characters.";
+    if (!/[A-Z]/.test(password)) return "Password must include at least one uppercase letter.";
+    if (!/[a-z]/.test(password)) return "Password must include at least one lowercase letter.";
+    if (!/[0-9]/.test(password)) return "Password must include at least one number.";
+    if (!/[^A-Za-z0-9]/.test(password)) return "Password must include at least one special character.";
+    if (password !== confirmPassword) return "Passwords do not match.";
+    return null;
+  }
+
   async function onSignIn() {
     setLoading(true);
     setError(null);
     try {
-      await adminLogin(email, password);
+      await adminLogin(email.trim(), password);
       localStorage.setItem("eadss_admin_logged_in", "1");
       router.push("/try-now");
     } catch (e: any) {
@@ -28,15 +44,16 @@ export default function LoginPage() {
   }
 
   async function onRegister() {
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+    const validationError = validateRegisterInput();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
     setLoading(true);
     setError(null);
     try {
-      await adminRegister(email, password);
+      await adminRegister(email.trim(), password);
       localStorage.setItem("eadss_admin_logged_in", "1");
       router.push("/try-now");
     } catch (e: any) {
@@ -98,6 +115,9 @@ export default function LoginPage() {
                 <span>Confirm Password</span>
                 <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
               </label>
+              <div className="meta">
+                Use 8+ chars with uppercase, lowercase, number, and special character.
+              </div>
             </>
           )}
 
