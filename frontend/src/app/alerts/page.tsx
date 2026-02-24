@@ -8,8 +8,12 @@ import { demoAlerts } from "@/app/alerts/demoData";
 export default function AlertsPage() {
   const [orgId, setOrgId] = useState("sample-org");
   const [teamId, setTeamId] = useState("");
-  const [since, setSince] = useState(() => new Date().toISOString().slice(0, 10));
-  const [until, setUntil] = useState(() => new Date().toISOString().slice(0, 10));
+  const [since, setSince] = useState(
+    () => [...demoAlerts].sort((a, b) => a.day.localeCompare(b.day))[0]?.day ?? new Date().toISOString().slice(0, 10)
+  );
+  const [until, setUntil] = useState(
+    () => [...demoAlerts].sort((a, b) => b.day.localeCompare(a.day))[0]?.day ?? new Date().toISOString().slice(0, 10)
+  );
   const alerts = useMemo(
     () =>
       demoAlerts.filter((a) => {
