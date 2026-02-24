@@ -15,8 +15,8 @@ type OrgLogEntry = {
 export default function RegisterPage() {
   const router = useRouter();
 
-  const [orgId, setOrgId] = useState("demo");
-  const [name, setName] = useState("Demo Org");
+  const [orgId, setOrgId] = useState("");
+  const [name, setName] = useState("");
   const [result, setResult] = useState<{ org_id: string; name: string; api_key: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -103,6 +103,7 @@ export default function RegisterPage() {
   return (
     <main className="app-shell stack">
       <section className="hero-card stack">
+        <div className="announce-ribbon">Authenticated setup only</div>
         <div className="page-header">
           <div>
             <h1 className="page-title">Register Organization</h1>
@@ -124,7 +125,7 @@ export default function RegisterPage() {
       <section className="panel stack">
         <h2 className="feature-title">Organization Details</h2>
 
-        <div className="form-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
+        <div className="form-cols">
           <label className="field">
             <span>Org ID</span>
             <input value={orgId} onChange={(e) => setOrgId(e.target.value)} placeholder="acme-support" />

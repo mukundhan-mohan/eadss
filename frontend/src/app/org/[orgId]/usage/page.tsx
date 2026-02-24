@@ -38,6 +38,11 @@ export default function UsagePage({ params }: { params: { orgId: string } }) {
 
   return (
     <main className="app-shell stack">
+      <section className="demo-header stack">
+        <div className="announce-ribbon">Usage and performance analytics</div>
+        <p className="meta">Request volume, latency, and endpoint activity for the selected organization.</p>
+      </section>
+
       <section className="page-header">
         <div>
           <h1 className="page-title">Usage Analytics</h1>

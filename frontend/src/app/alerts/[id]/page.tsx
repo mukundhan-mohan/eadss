@@ -49,6 +49,10 @@ export default function AlertDetailPage({ params }: { params: { id: string } }) 
 
   return (
     <main className="app-shell stack">
+      <section className="demo-header stack">
+        <div className="announce-ribbon">Explainable alert investigation demo</div>
+      </section>
+
       <section className="page-header">
         <div>
           <h1 className="page-title">Alert Detail</h1>
@@ -61,7 +65,7 @@ export default function AlertDetailPage({ params }: { params: { id: string } }) 
 
       {error && <div className="error">{error}</div>}
       {!data && !error && <div className="notice">Loading alert detail...</div>}
-      <div className="notice">This alert detail page uses sample public data.</div>
+      <div className="panel-soft">This alert detail page uses sample public data.</div>
 
       {alert && (
         <section className="panel stack">

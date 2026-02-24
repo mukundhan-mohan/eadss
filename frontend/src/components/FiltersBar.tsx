@@ -17,7 +17,7 @@ export default function FiltersBar({ orgId, teamId, since, until, onChange }: Pr
 
   return (
     <section className="panel">
-      <div className="form-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+      <div className="form-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
         <label className="field">
           <span>Organization</span>
           <input value={orgId} onChange={(e) => handle({ orgId: e.target.value })} placeholder="demo" />

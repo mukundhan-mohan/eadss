@@ -49,6 +49,11 @@ export default function SuperAdminUsersPage() {
 
   return (
     <main className="app-shell stack">
+      <section className="demo-header stack">
+        <div className="announce-ribbon">Restricted super admin console</div>
+        <p className="meta">Review user accounts, membership state, and credential metadata.</p>
+      </section>
+
       <section className="page-header">
         <div>
           <h1 className="page-title">Super Admin Users</h1>

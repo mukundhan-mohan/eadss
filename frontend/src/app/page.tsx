@@ -61,7 +61,8 @@ export default function HomePage() {
       joyScore > negativeScore ? "positive" : negativeScore > 0 ? "negative" : "neutral";
 
     const totalSignal = Math.max(1, joyScore + negativeScore + riskScore);
-    const risk: DemoOutput["risk"] = riskScore >= 2 || negativeScore >= 3 ? "high" : riskScore > 0 || negativeScore > 0 ? "medium" : "low";
+    const risk: DemoOutput["risk"] =
+      riskScore >= 2 || negativeScore >= 3 ? "high" : riskScore > 0 || negativeScore > 0 ? "medium" : "low";
     const confidence = Math.min(0.98, 0.58 + totalSignal * 0.08);
 
     const recommendation =
@@ -82,56 +83,96 @@ export default function HomePage() {
 
   return (
     <main className="app-shell stack">
-      <section className="hero-card">
-        <div className="page-header">
-          <div>
-            <h1 className="page-title">EADSS</h1>
-            <p className="page-subtitle">Emotionally-Aware Decision Support System</p>
+      <section className="announce-ribbon">Now live: public product demo dashboard and alerts experience.</section>
+
+      <section className="hero-card stack">
+        <div className="hero-grid">
+          <div className="stack">
+            <span className="badge">Emotion Intelligence Platform</span>
+            <h1 className="page-title">Emotionally-Aware Decision Support System</h1>
+            <p className="hero-copy">
+              Convert unstructured tickets, surveys, and complaints into explainable decisions with
+              emotion analytics, trend intelligence, and actionable alerts.
+            </p>
+            <div className="row">
+              <Link className="button" href={isAuthed ? "/try-now" : "/login"}>
+                Try Now
+              </Link>
+              <Link className="button-secondary" href="/dashboard">
+                View Public Demo
+              </Link>
+              <Link className="button-muted" href="/api-docs">
+                API Docs
+              </Link>
+            </div>
           </div>
-          <span className="badge">Production Intelligence Console</span>
+
+          <div className="hero-aside stack">
+            <div className="kpi-card">
+              <div className="kpi-label">Inference Latency</div>
+              <div className="kpi-value">&lt; 300ms</div>
+            </div>
+            <div className="kpi-card">
+              <div className="kpi-label">Signals Tracked</div>
+              <div className="kpi-value">Emotion + Topic + Risk</div>
+            </div>
+            <div className="kpi-card">
+              <div className="kpi-label">Explainability</div>
+              <div className="kpi-value">Evidence-first</div>
+            </div>
+          </div>
         </div>
 
-        <p className="hero-copy">
-          Ingest support interactions with PII redaction, run continuous emotion inference, detect
-          statistical spikes, and provide evidence-backed alerts for operational teams.
-        </p>
+        <div className="trust-row">
+          <span>Built for Support Ops</span>
+          <span>•</span>
+          <span>PII-safe ingestion</span>
+          <span>•</span>
+          <span>Auditable decisions</span>
+          <span>•</span>
+          <span>Production-ready APIs</span>
+        </div>
+      </section>
 
+      <section className="panel stack">
+        <div className="split">
+          <h2 className="feature-title">Products</h2>
+          <span className="meta">Modular capabilities for enterprise workflows</span>
+        </div>
         <div className="feature-grid">
           <article className="feature-item">
-            <h2 className="feature-title">PII-safe ingestion</h2>
-            <p className="feature-desc">Structured redaction before persistence for compliant workflows.</p>
+            <h3 className="feature-title">Emotion Analytics</h3>
+            <p className="feature-desc">Track anger, anxiety, sadness, and positive sentiment patterns over time.</p>
           </article>
           <article className="feature-item">
-            <h2 className="feature-title">Background inference</h2>
-            <p className="feature-desc">Asynchronous model processing with low-latency dashboard updates.</p>
+            <h3 className="feature-title">Topic + Emotion Trends</h3>
+            <p className="feature-desc">Discover where emotional risk clusters by team, channel, and conversation topic.</p>
           </article>
           <article className="feature-item">
-            <h2 className="feature-title">Explainable alerts</h2>
-            <p className="feature-desc">Evidence documents, highlights, and score context for incident response.</p>
+            <h3 className="feature-title">Decision Alerts</h3>
+            <p className="feature-desc">Trigger explainable alerts with baseline context and evidence-backed recommendations.</p>
           </article>
         </div>
       </section>
 
       <section className="panel stack">
-        <div className="row">
-          {isAuthed && (
-            <Link className="button" href="/register">
-              Register Organization
-            </Link>
-          )}
-          <Link className="button-secondary" href="/dashboard">
-            Open Demo Dashboard
-          </Link>
-          <Link className="button-muted" href="/alerts">
-            Review Alerts
-          </Link>
-          <Link className="button-muted" href={isAuthed ? "/try-now" : "/login"}>
-            Try Now
-          </Link>
-          <Link className="button-muted" href="/api-docs">
-            API Docs
-          </Link>
+        <div className="split">
+          <h2 className="feature-title">Developer Experience</h2>
+          <span className="meta">Integrate quickly with REST APIs</span>
         </div>
+        <pre className="inline-code">{`const res = await fetch("https://api.eadss.com/api/v1/ingest", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "X-API-Key": process.env.EADSS_API_KEY,
+  },
+  body: JSON.stringify({
+    org_id: "sample-org",
+    source: "ticket",
+    channel: "support",
+    text: "Customer is frustrated. Payment failed again today."
+  })
+});`}</pre>
       </section>
 
       <section className="panel stack">
@@ -177,7 +218,11 @@ export default function HomePage() {
           </div>
         )}
 
-        {output && <div className="notice"><strong>Recommendation:</strong> {output.recommendation}</div>}
+        {output && (
+          <div className="notice">
+            <strong>Recommendation:</strong> {output.recommendation}
+          </div>
+        )}
       </section>
     </main>
   );

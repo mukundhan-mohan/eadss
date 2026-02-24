@@ -28,6 +28,11 @@ export default function AlertsPage() {
 
   return (
     <main className="app-shell stack">
+      <section className="demo-header stack">
+        <div className="announce-ribbon">Public anomaly showcase</div>
+        <p className="meta">Explore rich sample alerts, filters, and explainable evidence flow without authentication.</p>
+      </section>
+
       <section className="page-header">
         <div>
           <h1 className="page-title">Alerts</h1>
@@ -56,7 +61,7 @@ export default function AlertsPage() {
         }}
       />
 
-      <div className="notice">This page uses sample public alerts for product demonstration.</div>
+      <div className="panel-soft">This page uses sample public alerts for product demonstration.</div>
 
       <section className="panel stack">
         <div className="split">

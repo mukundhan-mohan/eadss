@@ -73,6 +73,11 @@ export default function OrgDashboard({ params }: { params: { orgId: string } }) 
 
   return (
     <main className="app-shell stack">
+      <section className="demo-header stack">
+        <div className="announce-ribbon">Organization workspace</div>
+        <p className="meta">Operational emotion trends for the selected organization.</p>
+      </section>
+
       <section className="page-header">
         <div>
           <h1 className="page-title">Organization Dashboard</h1>
@@ -110,6 +115,7 @@ export default function OrgDashboard({ params }: { params: { orgId: string } }) 
           <span className="meta">{loading ? "Refreshing..." : "Updated"}</span>
         </div>
         <EmotionStackedArea data={points} />
+        {!loading && points.length === 0 && <div className="empty">No trend data yet for this organization.</div>}
       </section>
     </main>
   );

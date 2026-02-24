@@ -44,6 +44,13 @@ export default function DashboardPage() {
 
   return (
     <main className="app-shell stack">
+      <section className="demo-header stack">
+        <div className="announce-ribbon">Public product demo</div>
+        <p className="meta">
+          This dashboard is intentionally public and uses curated sample data for showcasing the EADSS platform.
+        </p>
+      </section>
+
       <section className="page-header">
         <div>
           <h1 className="page-title">Demo Dashboard</h1>
@@ -77,7 +84,7 @@ export default function DashboardPage() {
         </article>
       </section>
 
-      <div className="notice">
+      <div className="panel-soft">
         This page uses sample public data for product demonstration. No login or API key required.
       </div>
 

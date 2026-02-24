@@ -91,6 +91,7 @@ export default function TryNowPage() {
 
       <section className="onboarding-main stack">
         <div className="hero-card stack">
+          <div className="announce-ribbon">Guided onboarding for production integration</div>
           <h1 className="page-title">Integration Procedure</h1>
           <p className="page-subtitle">
             Follow this flow to generate an access token and start sending data from your codebase.
@@ -113,7 +114,7 @@ export default function TryNowPage() {
         <article id="step2" className="panel stack">
           <h2 className="feature-title">2. Configure Environment</h2>
           <p className="meta">Store token and base URL in env vars used by your service.</p>
-          <pre className="inline-code">{`EADSS_BASE_URL=http://localhost:8000\nEADSS_API_KEY=eadss_xxx_generated_key`}</pre>
+          <pre className="inline-code">{`EADSS_BASE_URL=https://api.eadss.com\nEADSS_API_KEY=eadss_xxx_generated_key`}</pre>
         </article>
 
         <article id="step3" className="panel stack">

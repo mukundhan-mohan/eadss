@@ -5,6 +5,7 @@ export default function ApiDocsPage() {
   return (
     <main className="app-shell stack">
       <section className="hero-card stack">
+        <div className="announce-ribbon">Live backend Swagger documentation</div>
         <div>
           <h1 className="page-title">API Docs</h1>
           <p className="page-subtitle">Embedded FastAPI Swagger UI from `{docsUrl}`.</p>

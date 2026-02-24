@@ -77,7 +77,8 @@ export default function LoginPage() {
 
   return (
     <main className="app-shell">
-      <section className="hero-card stack" style={{ maxWidth: 640, margin: "0 auto" }}>
+      <section className="hero-card stack auth-shell">
+        <div className="announce-ribbon">Secure account access for EADSS workspace</div>
         <div className="page-header">
           <div>
             <h1 className="page-title">Try EADSS</h1>
@@ -87,7 +88,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className="row">
+        <div className="auth-toggle">
           <button
             className={mode === "signin" ? "button-secondary" : "button-muted"}
             onClick={() => {

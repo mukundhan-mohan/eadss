@@ -16,8 +16,9 @@ const body = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: "EADSS | Emotion & Anomaly Intelligence",
-  description: "Production monitoring dashboard for emotion and anomaly detection in support signals.",
+  title: "EADSS | Emotionally-Aware Decision Support System",
+  description:
+    "Turn unstructured organizational text into emotion analytics, explainable alerts, and decision-grade recommendations.",
 };
 
 export default function RootLayout({

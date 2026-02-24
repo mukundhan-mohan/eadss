@@ -168,9 +168,54 @@ main {
   background: linear-gradient(150deg, #ffffff 0%, #f3f9ff 60%, #e9f4fc 100%);
 }
 
+.announce-ribbon {
+  border: 1px solid #b7d2e7;
+  border-radius: 999px;
+  padding: 7px 12px;
+  width: fit-content;
+  background: linear-gradient(120deg, rgba(15, 111, 168, 0.12), rgba(208, 90, 30, 0.1));
+  color: #214962;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.4fr minmax(220px, 0.8fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.hero-aside {
+  border: 1px solid #bed6e8;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fbfdff 0%, #eef6fc 100%);
+  padding: 12px;
+}
+
+.trust-row {
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: #3f6076;
+  font-size: 0.88rem;
+  border-top: 1px solid #c8dceb;
+  padding-top: 12px;
+}
+
 .panel,
 .card {
   padding: 20px;
+}
+
+.panel-soft {
+  border: 1px solid #c8dceb;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fafdff 0%, #f2f8fd 100%);
+  padding: 14px;
 }
 
 .hero-copy {
@@ -206,6 +251,13 @@ main {
 }
 
 .row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.page-actions {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
@@ -374,6 +426,8 @@ textarea:focus {
   display: flex;
   justify-content: space-between;
   gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .mark-soft {
@@ -394,6 +448,30 @@ pre {
   border-radius: 10px;
   padding: 10px;
   overflow-x: auto;
+}
+
+.auth-shell {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.auth-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.form-cols {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.demo-header {
+  border: 1px solid #bfd6e8;
+  border-radius: 14px;
+  background: linear-gradient(140deg, #ffffff 0%, #eff7fd 100%);
+  padding: 14px;
 }
 
 .chart-wrap {
@@ -504,5 +582,9 @@ pre {
 
   .onboarding-side {
     position: static;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
   }
 }
