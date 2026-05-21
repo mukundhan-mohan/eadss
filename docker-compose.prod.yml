@@ -1,0 +1,105 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: eadss-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: eadss-redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: eadss-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      ENV: production
+      COOKIE_SECURE: "true"
+    ports:
+      - "${BACKEND_PORT}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - pdf_uploads:/app/data
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: eadss-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - pdf_uploads:/app/data
+    command: ["celery", "-A", "app.core.celery_app.celery_app", "worker", "--loglevel=info"]
+
+  beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: eadss-beat
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["celery", "-A", "app.core.celery_app.celery_app", "beat", "--loglevel=info"]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+        NEXT_PUBLIC_API_KEY: ${NEXT_PUBLIC_API_KEY}
+    container_name: eadss-frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+      NEXT_PUBLIC_API_KEY: ${NEXT_PUBLIC_API_KEY}
+    ports:
+      - "${FRONTEND_PORT}:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  pdf_uploads:

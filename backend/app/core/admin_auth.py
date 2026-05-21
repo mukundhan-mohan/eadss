@@ -18,6 +18,15 @@ COOKIE_NAME = "eadss_admin_session"
 COOKIE_MAX_AGE = 60 * 60 * 24 * 7  # 7 days
 
 
+def cookie_secure_enabled() -> bool:
+    raw = os.getenv("COOKIE_SECURE", "").strip().lower()
+    if raw in {"1", "true", "yes", "on"}:
+        return True
+    if raw in {"0", "false", "no", "off"}:
+        return False
+    return os.getenv("ENV", "dev").strip().lower() in {"prod", "production"}
+
+
 def hash_password(pw: str) -> str:
     return pwd_context.hash(pw)
 
@@ -39,7 +48,7 @@ def set_session_cookie(resp: Response, token: str):
         key=COOKIE_NAME,
         value=token,
         httponly=True,
-        secure=False,     # set True behind HTTPS
+        secure=cookie_secure_enabled(),
         samesite="lax",
         max_age=COOKIE_MAX_AGE,
         path="/",

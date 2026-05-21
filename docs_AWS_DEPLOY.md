@@ -76,10 +76,11 @@ Edit `.env` for production values:
 - `NEXT_PUBLIC_API_BASE_URL=https://api.eadss.com` (or `https://eadss.com` if same host reverse-proxy)
 - any API keys/secrets required by your inference pipeline
 
-Start stack:
+Start production stack:
 
 ```bash
-docker compose up -d --build
+docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml exec backend alembic upgrade head
 ```
 
 ## 3) Domain Setup (GoDaddy)
@@ -117,8 +118,22 @@ sudo certbot --nginx -d eadss.com -d www.eadss.com -d api.eadss.com
 ```bash
 cd ~/eadss
 git pull
-docker compose up -d --build
+docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml exec backend alembic upgrade head
 ```
+
+## Production Notes
+
+- Use `docker-compose.prod.yml` for server deployment, not the default `docker-compose.yml`.
+- The default compose file is still optimized for local development (`next dev`, bind mounts, reload).
+- Set production values in `.env` before bringing the stack up:
+  - `ENV=production`
+  - `COOKIE_SECURE=true`
+  - strong `POSTGRES_PASSWORD`
+  - strong `ADMIN_JWT_SECRET`
+  - strong `SUPER_ADMIN_PASSWORD`
+  - `NEXT_PUBLIC_API_BASE_URL=https://api.eadss.com`
+- The frontend build bakes `NEXT_PUBLIC_API_BASE_URL` and `NEXT_PUBLIC_API_KEY` into the bundle, so set them correctly before building.
 
 ---
 
