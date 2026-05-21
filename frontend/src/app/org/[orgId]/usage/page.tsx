@@ -49,6 +49,9 @@ export default function UsagePage({ params }: { params: { orgId: string } }) {
           <p className="page-subtitle">Org: {orgId}</p>
         </div>
         <div className="nav-inline">
+          <Link className="button-muted" href={`/org/${orgId}/pdf-qa`}>
+            PDF Q&A
+          </Link>
           <Link className="button-muted" href={`/org/${orgId}/dashboard`}>
             Dashboard
           </Link>

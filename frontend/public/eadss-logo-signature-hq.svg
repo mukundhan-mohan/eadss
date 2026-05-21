@@ -1,0 +1,15 @@
+<svg width="2400" height="640" viewBox="0 0 2400 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="eadssGradHQ" x1="80" y1="80" x2="560" y2="560" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0f6fa8"/>
+      <stop offset="1" stop-color="#d05a1e"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="80" y="80" width="480" height="480" rx="128" fill="url(#eadssGradHQ)"/>
+  <path d="M200 192H440V248H248V324H404V380H248V472H440V528H200V192Z" fill="white"/>
+  <circle cx="464" cy="464" r="44" fill="white" fill-opacity="0.2"/>
+
+  <text x="660" y="305" fill="#0f2538" font-family="Lexend, Trebuchet MS, Segoe UI, sans-serif" font-size="176" font-weight="700" letter-spacing="3">EADSS</text>
+  <text x="664" y="420" fill="#5b7184" font-family="Source Sans 3, Segoe UI, sans-serif" font-size="68" font-weight="600">Emotionally-Aware Decision Support System</text>
+</svg>

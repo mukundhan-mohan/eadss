@@ -10,6 +10,8 @@ from app.db.models.org import Organization
 from app.db.models.usage import UsageEvent
 from app.db.models.admin_user import AdminUser
 from app.db.models.admin_membership import AdminMembership
+from app.db.models.pdf_document import PdfDocument
+from app.db.models.pdf_chunk import PdfChunk
 
 __all__ = ["Document", 
            "AuditLog", 
@@ -26,5 +28,7 @@ __all__ = ["Document",
            "Organization",
            "UsageEvent",
            "AdminUser",
-           "AdminMembership"
+           "AdminMembership",
+           "PdfDocument",
+           "PdfChunk",
            ]

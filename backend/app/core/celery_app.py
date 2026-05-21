@@ -55,3 +55,5 @@ import app.tasks.topic_jobs  # noqa: F401
 import app.tasks.aggregations  # noqa: F401
 
 import app.tasks.alerting  # noqa: F401
+
+import app.tasks.pdf_rag  # noqa: F401

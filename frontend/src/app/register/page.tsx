@@ -64,6 +64,14 @@ export default function RegisterPage() {
     setLogs(next);
   }
 
+  function openOrgRoute(targetOrgId: string, apiKey: string, path: "dashboard" | "pdf-qa" | "usage" = "dashboard") {
+    localStorage.setItem(`eadss_api_key:${targetOrgId}`, apiKey);
+    localStorage.setItem(`eadss_api_key:${targetOrgId.toLowerCase()}`, apiKey);
+    localStorage.setItem(`eadss_api_key:${targetOrgId.toUpperCase()}`, apiKey);
+    localStorage.setItem("eadss_active_org", targetOrgId);
+    router.push(`/org/${targetOrgId}/${path}`);
+  }
+
   if (!authChecked) {
     return (
       <main className="app-shell">
@@ -175,9 +183,20 @@ export default function RegisterPage() {
           </div>
 
           <div className="row">
-            <Link className="button-secondary" href={`/org/${result.org_id}/dashboard`}>
+            <button
+              className="button-secondary"
+              type="button"
+              onClick={() => openOrgRoute(result.org_id, result.api_key, "dashboard")}
+            >
               Open Org Dashboard
-            </Link>
+            </button>
+            <button
+              className="button"
+              type="button"
+              onClick={() => openOrgRoute(result.org_id, result.api_key, "pdf-qa")}
+            >
+              Open PDF Q&amp;A
+            </button>
             <Link className="button-muted" href="/try-now">
               Continue Setup
             </Link>
@@ -201,6 +220,13 @@ export default function RegisterPage() {
                   <div className="meta">{new Date(log.created_at).toLocaleString()}</div>
                 </div>
                 <div className="row">
+                  <button
+                    className="button-secondary"
+                    onClick={() => openOrgRoute(log.org_id, log.api_key, "pdf-qa")}
+                    type="button"
+                  >
+                    Open PDF Q&amp;A
+                  </button>
                   <button
                     className="button-muted"
                     onClick={() => persistLogs(logs.filter((l) => l.org_id !== log.org_id))}

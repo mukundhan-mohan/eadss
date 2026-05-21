@@ -118,6 +118,41 @@ export type AlertDetail = {
   evidence: EvidenceOut[];
 };
 
+export type PdfDocumentOut = {
+  id: string;
+  org_id: string;
+  title?: string | null;
+  filename: string;
+  mime_type: string;
+  status: "uploaded" | "processing" | "ready" | "failed" | string;
+  embedding_model?: string | null;
+  page_count?: number | null;
+  chunk_count?: number | null;
+  error_message?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PdfDocumentListResponse = {
+  items: PdfDocumentOut[];
+};
+
+export type PdfAnswerEvidenceOut = {
+  chunk_id: string;
+  document_id: string;
+  document_title?: string | null;
+  page_number: number;
+  chunk_index: number;
+  score: number;
+  excerpt: string;
+};
+
+export type PdfAskOut = {
+  question: string;
+  answer: string;
+  evidence: PdfAnswerEvidenceOut[];
+};
+
 export function getDocuments(params: {
   org_id?: string;
   team_id?: string;
@@ -179,13 +214,65 @@ export function getUsage(days = 7) {
   return apiFetch<{ org_id: string; days: number; by_day: any[]; top_paths: any[] }>(`/api/v1/usage?${qs.toString()}`);
 }
 
+export async function uploadPdf(file: File, title?: string) {
+  const form = new FormData();
+  form.append("file", file);
+  if (title?.trim()) form.append("title", title.trim());
+
+  const res = await fetch(`${API_BASE}/api/v1/pdf/upload`, {
+    method: "POST",
+    headers: {
+      "X-API-Key": getClientApiKey(),
+    },
+    body: form,
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error(await readErrorMessage(res));
+  }
+
+  return res.json() as Promise<PdfDocumentOut>;
+}
+
+export function listPdfDocuments() {
+  return apiFetch<PdfDocumentListResponse>(`/api/v1/pdf/documents`);
+}
+
+export function getPdfDocument(documentId: string) {
+  return apiFetch<PdfDocumentOut>(`/api/v1/pdf/documents/${documentId}`);
+}
+
+export function askPdfQuestion(payload: { question: string; document_id?: string; top_k?: number }) {
+  return apiFetch<PdfAskOut>(`/api/v1/pdf/ask`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
 function getClientApiKey(): string {
   if (typeof window === "undefined") return process.env.NEXT_PUBLIC_API_KEY ?? "dev-local-key";
 
   const activeOrg = localStorage.getItem("eadss_active_org");
   if (activeOrg) {
-    const k = localStorage.getItem(`eadss_api_key:${activeOrg}`);
-    if (k) return k;
+    const direct = localStorage.getItem(`eadss_api_key:${activeOrg}`);
+    if (direct) return direct;
+
+    const lower = localStorage.getItem(`eadss_api_key:${activeOrg.toLowerCase()}`);
+    if (lower) return lower;
+
+    const upper = localStorage.getItem(`eadss_api_key:${activeOrg.toUpperCase()}`);
+    if (upper) return upper;
+
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const key = localStorage.key(i);
+      if (!key?.startsWith("eadss_api_key:")) continue;
+      const orgPart = key.slice("eadss_api_key:".length);
+      if (orgPart.toLowerCase() === activeOrg.toLowerCase()) {
+        const matched = localStorage.getItem(key);
+        if (matched) return matched;
+      }
+    }
   }
 
   return process.env.NEXT_PUBLIC_API_KEY ?? "dev-local-key";

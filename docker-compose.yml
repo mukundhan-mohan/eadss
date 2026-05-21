@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: pgvector/pgvector:pg16
     container_name: eadss-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -43,6 +43,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
+      - pdf_uploads:/app/data
     command: >
       bash -lc "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
@@ -60,6 +61,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
+      - pdf_uploads:/app/data
     command: >
       bash -lc "celery -A app.core.celery_app.celery_app worker --loglevel=info"
 
@@ -97,3 +99,4 @@ services:
 
 volumes:
   postgres_data:
+  pdf_uploads:

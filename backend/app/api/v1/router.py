@@ -9,6 +9,7 @@ from app.api.v1.endpoints.tickets import router as tickets_router
 from app.api.v1.endpoints.orgs import router as orgs_router
 from app.api.v1.endpoints.usage import router as usage_router
 from app.api.v1.endpoints.admin_auth import router as admin_auth_router
+from app.api.v1.endpoints.pdf_rag import router as pdf_rag_router
 
 api_router = APIRouter()
 
@@ -21,3 +22,4 @@ api_router.include_router(tickets_router, tags=["tickets"])
 api_router.include_router(orgs_router, tags=["orgs"])
 api_router.include_router(usage_router, tags=["usage"])
 api_router.include_router(admin_auth_router, tags=["admin"])
+api_router.include_router(pdf_rag_router, tags=["pdf-rag"])
