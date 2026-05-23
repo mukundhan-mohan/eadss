@@ -1,6 +1,7 @@
 from app.db.models.document import Document
 from app.db.models.audit_log import AuditLog
 from app.db.models.inference import InferenceRun, DocumentInference
+from app.db.models.inference_review import InferenceReview
 from app.db.models.topic import Topic
 from app.db.models.document_topic import DocumentTopic
 from app.db.models.aggregations import EmotionDaily, EmotionRolling, AlertEvent
@@ -17,6 +18,7 @@ __all__ = ["Document",
            "AuditLog", 
            "InferenceRun", 
            "DocumentInference", 
+           "InferenceReview",
            "Topic", 
            "DocumentTopic", 
            "EmotionDaily", 

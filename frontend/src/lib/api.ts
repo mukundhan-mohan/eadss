@@ -153,6 +153,54 @@ export type PdfAskOut = {
   evidence: PdfAnswerEvidenceOut[];
 };
 
+export type InferenceReviewOut = {
+  id: string;
+  status: "approved" | "edited" | "rejected" | string;
+  reviewer_name?: string | null;
+  feedback?: string | null;
+  edited_sentiment?: string | null;
+  edited_emotion_labels?: string[] | null;
+  edited_confidence?: number | null;
+  reviewed_at: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ReviewHistoryEntryOut = {
+  id: string;
+  actor?: string | null;
+  action: string;
+  created_at: string;
+  meta: Record<string, any>;
+};
+
+export type ReviewQueueInferenceOut = {
+  id: string;
+  created_at: string;
+  sentiment?: string | null;
+  emotion_labels?: string[] | null;
+  calibrated_confidence?: number | null;
+  result?: any;
+};
+
+export type ReviewQueueItemOut = {
+  document_id: string;
+  external_id?: string | null;
+  org_id?: string | null;
+  source?: string | null;
+  channel?: string | null;
+  timestamp?: string | null;
+  text_redacted: string;
+  inference: ReviewQueueInferenceOut;
+  review_status: "pending" | "approved" | "edited" | "rejected" | string;
+  review?: InferenceReviewOut | null;
+  history: ReviewHistoryEntryOut[];
+};
+
+export type ReviewQueueResponse = {
+  items: ReviewQueueItemOut[];
+};
+
 export function getDocuments(params: {
   org_id?: string;
   team_id?: string;
@@ -245,6 +293,31 @@ export function getPdfDocument(documentId: string) {
 
 export function askPdfQuestion(payload: { question: string; document_id?: string; top_k?: number }) {
   return apiFetch<PdfAskOut>(`/api/v1/pdf/ask`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function getReviewQueue(params?: { limit?: number; state?: "pending" | "reviewed" | "all" }) {
+  const qs = new URLSearchParams();
+  if (params?.limit) qs.set("limit", String(params.limit));
+  if (params?.state) qs.set("state", params.state);
+  const suffix = qs.toString() ? `?${qs.toString()}` : "";
+  return apiFetch<ReviewQueueResponse>(`/api/v1/reviews/queue${suffix}`);
+}
+
+export function submitInferenceReview(
+  documentId: string,
+  payload: {
+    status: "approved" | "edited" | "rejected";
+    reviewer_name?: string;
+    feedback?: string;
+    edited_sentiment?: string;
+    edited_emotion_labels?: string[];
+    edited_confidence?: number;
+  }
+) {
+  return apiFetch<InferenceReviewOut>(`/api/v1/reviews/documents/${documentId}`, {
     method: "POST",
     body: JSON.stringify(payload),
   });

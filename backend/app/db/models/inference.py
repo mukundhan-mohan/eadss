@@ -63,3 +63,4 @@ class DocumentInference(Base):
 
     document = relationship("Document", back_populates="inference_links")
     inference_run = relationship("InferenceRun", back_populates="documents")
+    review = relationship("InferenceReview", back_populates="document_inference", uselist=False, cascade="all, delete-orphan")
