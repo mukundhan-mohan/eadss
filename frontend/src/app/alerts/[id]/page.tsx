@@ -70,7 +70,7 @@ export default function AlertDetailPage({ params }: { params: { id: string } }) 
       {alert && (
         <section className="panel stack">
           <div className="row meta">
-            <strong style={{ color: "#173a58" }}>{alert.alert_type}</strong>
+            <strong style={{ color: "#edf4fb" }}>{alert.alert_type}</strong>
             <span>• severity {alert.severity}</span>
             <span>• day {alert.day}</span>
           </div>

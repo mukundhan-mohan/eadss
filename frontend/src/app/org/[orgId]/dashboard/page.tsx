@@ -234,17 +234,15 @@ export default function OrgDashboard({ params }: { params: { orgId: string } }) 
 
   return (
     <main className="app-shell stack">
-      <section className="demo-header stack">
-        <div className="announce-ribbon">Organization workspace</div>
-        <p className="meta">Operational emotion trends and human review controls for the selected organization.</p>
-      </section>
-
-      <section className="page-header">
-        <div>
-          <h1 className="page-title">Organization Dashboard</h1>
-          <p className="page-subtitle">Org: {orgId}</p>
+      <section className="control-hero">
+        <div className="control-hero-copy">
+          <span className="hero-kicker">Organization workspace</span>
+          <h1 className="page-title">Operate the review loop, not just the model output.</h1>
+          <p className="page-subtitle">
+            Org: {orgId}. Track emotional pressure trends, inspect AI decisions, and keep reviewers in the approval path.
+          </p>
         </div>
-        <div className="nav-inline">
+        <div className="control-hero-actions">
           <Link className="button-muted" href={`/org/${orgId}/pdf-qa`}>
             PDF Q&A
           </Link>
@@ -273,7 +271,7 @@ export default function OrgDashboard({ params }: { params: { orgId: string } }) 
           <div className="kpi-label">Pending Reviews</div>
           <div className="kpi-value">{reviewSummary.pending}</div>
         </article>
-        <article className="kpi-card">
+        <article className="kpi-card kpi-card-good">
           <div className="kpi-label">Reviewed Items</div>
           <div className="kpi-value">{reviewSummary.total - reviewSummary.pending}</div>
         </article>
@@ -283,7 +281,10 @@ export default function OrgDashboard({ params }: { params: { orgId: string } }) 
 
       <section className="panel stack">
         <div className="split">
-          <h2 className="feature-title">Emotion Trends</h2>
+          <div>
+            <span className="badge">Trend surface</span>
+            <h2 className="feature-title">Emotion Trends</h2>
+          </div>
           <span className="meta">{loading ? "Refreshing..." : "Updated"}</span>
         </div>
         <EmotionStackedArea data={points} />
@@ -293,6 +294,7 @@ export default function OrgDashboard({ params }: { params: { orgId: string } }) 
       <section className="panel stack">
         <div className="split">
           <div>
+            <span className="badge">Human-in-the-loop</span>
             <h2 className="feature-title">Human Review Queue</h2>
             <p className="meta">Approve, edit, or reject AI emotion and risk outputs before downstream decisions rely on them.</p>
           </div>
@@ -343,7 +345,7 @@ export default function OrgDashboard({ params }: { params: { orgId: string } }) 
                 : item.inference.emotion_labels ?? [];
 
             return (
-              <article key={item.document_id} className="list-item stack">
+              <article key={item.document_id} className="list-item review-item stack">
                 <div className="split">
                   <div className="stack" style={{ gap: 6 }}>
                     <strong>{item.external_id || item.document_id.slice(0, 8)}</strong>

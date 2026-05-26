@@ -73,7 +73,7 @@ export default function AlertsPage() {
           {alerts.map((a) => (
             <Link key={a.id} href={`/alerts/${a.id}`} className="list-item">
               <div className="row meta">
-                <strong style={{ color: "#173a58" }}>{a.alert_type}</strong>
+                <strong style={{ color: "#edf4fb" }}>{a.alert_type}</strong>
                 <span>• severity {a.severity}</span>
                 <span>• day {a.day}</span>
                 {a.channel && <span>• channel {a.channel}</span>}

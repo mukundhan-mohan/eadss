@@ -43,7 +43,7 @@ const samplePoints: Point[] = [
   { day: "2026-02-23", anger: 2, anxiety: 3, joy: 8, neutral: 11 },
 ];
 
-const chartPalette = ["#0f6fa8", "#d05a1e", "#18794e", "#5e6f82", "#8c5228", "#5a87ab"];
+const chartPalette = ["#00c2a8", "#ff8c42", "#f95d6a", "#7cc6fe", "#ffd166", "#7d8ca3"];
 
 export default function DashboardPage() {
   const points = samplePoints;
@@ -75,8 +75,8 @@ export default function DashboardPage() {
 
       for (const [k, v] of Object.entries(p)) {
         if (k === "day") continue;
-        emotions.add(k);
         const val = Number(v ?? 0);
+        emotions.add(k);
         docs += val;
         emotionTotals[k] = (emotionTotals[k] ?? 0) + val;
       }
@@ -114,21 +114,18 @@ export default function DashboardPage() {
 
   return (
     <main className="app-shell stack">
-      <section className="demo-header stack">
-        <div className="announce-ribbon">Public AI product demo</div>
-        <p className="meta">
-          This dashboard is intentionally public and uses curated sample data for showcasing EADSS AI decision intelligence.
-        </p>
-      </section>
-
-      <section className="page-header">
-        <div>
-          <h1 className="page-title">Demo Dashboard</h1>
-          <p className="page-subtitle">Public sample data for a 14-day emotion trend demo.</p>
+      <section className="control-hero">
+        <div className="control-hero-copy">
+          <span className="hero-kicker">Public signal room</span>
+          <h1 className="page-title">See how emotional pressure becomes operational insight.</h1>
+          <p className="page-subtitle">
+            This is a public product demo using curated sample data to show the charting, evidence tone, and decision
+            posture of EADSS.
+          </p>
         </div>
-        <div className="nav-inline">
-          <Link className="button-muted" href="/alerts">
-            Alerts
+        <div className="control-hero-actions">
+          <Link className="button-secondary" href="/alerts">
+            Explore Alerts
           </Link>
           <Link className="button-muted" href="/register">
             Register Org
@@ -141,39 +138,43 @@ export default function DashboardPage() {
 
       <section className="kpi-grid">
         <article className="kpi-card">
-          <div className="kpi-label">Loaded Days</div>
+          <div className="kpi-label">Loaded days</div>
           <div className="kpi-value">{insights.days}</div>
         </article>
         <article className="kpi-card">
-          <div className="kpi-label">Total Inferred Events</div>
+          <div className="kpi-label">Total inferred events</div>
           <div className="kpi-value">{insights.docs}</div>
         </article>
         <article className="kpi-card">
-          <div className="kpi-label">Emotion Categories</div>
+          <div className="kpi-label">Signal families</div>
           <div className="kpi-value">{insights.emotions}</div>
         </article>
         <article className="kpi-card">
-          <div className="kpi-label">Avg Daily Volume</div>
+          <div className="kpi-label">Average daily volume</div>
           <div className="kpi-value">{insights.avgDailyLoad}</div>
         </article>
         <article className="kpi-card">
-          <div className="kpi-label">Peak Day</div>
+          <div className="kpi-label">Peak day</div>
           <div className="kpi-value">{insights.peakDay?.day ?? "-"}</div>
         </article>
-        <article className="kpi-card">
-          <div className="kpi-label">Pressure Index</div>
+        <article className="kpi-card kpi-card-alert">
+          <div className="kpi-label">Pressure index</div>
           <div className="kpi-value">{insights.riskIndex}%</div>
         </article>
       </section>
 
       <div className="panel-soft">
-        This page uses sample public data for AI product demonstration. No login or API key required.
+        Public demo only. The real product adds authenticated ingestion, human review queues, and evidence-linked
+        workflow actions on top of these signals.
       </div>
 
       <section className="panel stack">
         <div className="split">
-          <h2 className="feature-title">Emotion Trends</h2>
-          <span className="meta">Sample dataset</span>
+          <div>
+            <span className="badge">Trend surface</span>
+            <h2 className="feature-title">Emotion volume over time</h2>
+          </div>
+          <span className="meta">Sample dataset • 14-day window</span>
         </div>
         <EmotionStackedArea data={points} />
       </section>
@@ -181,8 +182,8 @@ export default function DashboardPage() {
       <section className="dashboard-grid">
         <article className="panel stack">
           <div className="split">
-            <h2 className="feature-title">Emotion Mix Distribution</h2>
-            <span className="meta">Share of signal by emotion</span>
+            <h2 className="feature-title">Emotion mix</h2>
+            <span className="meta">Distribution by signal family</span>
           </div>
           <div className="chart-wrap-sm">
             <ResponsiveContainer>
@@ -201,19 +202,19 @@ export default function DashboardPage() {
 
         <article className="panel stack">
           <div className="split">
-            <h2 className="feature-title">Operational Pressure vs Recovery</h2>
+            <h2 className="feature-title">Pressure vs recovery</h2>
             <span className="meta">Daily emotional load balance</span>
           </div>
           <div className="chart-wrap-sm">
             <ResponsiveContainer>
               <LineChart data={insights.workloadTrend} margin={{ top: 12, right: 14, left: 0, bottom: 6 }}>
-                <CartesianGrid strokeDasharray="4 4" stroke="#d8e7f2" />
-                <XAxis dataKey="day" tick={{ fill: "#48657a", fontSize: 12 }} />
-                <YAxis tick={{ fill: "#48657a", fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="4 4" stroke="#264a62" />
+                <XAxis dataKey="day" tick={{ fill: "#9bb7ca", fontSize: 12 }} />
+                <YAxis tick={{ fill: "#9bb7ca", fontSize: 12 }} />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="pressure" stroke="#d05a1e" strokeWidth={2.2} dot={false} />
-                <Line type="monotone" dataKey="recovery" stroke="#18794e" strokeWidth={2.2} dot={false} />
+                <Line type="monotone" dataKey="pressure" stroke="#ff8c42" strokeWidth={2.2} dot={false} />
+                <Line type="monotone" dataKey="recovery" stroke="#00c2a8" strokeWidth={2.2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -221,19 +222,19 @@ export default function DashboardPage() {
 
         <article className="panel stack">
           <div className="split">
-            <h2 className="feature-title">Weekday Signal Pattern</h2>
-            <span className="meta">Where load tends to cluster</span>
+            <h2 className="feature-title">Weekday clustering</h2>
+            <span className="meta">Where service load tends to accumulate</span>
           </div>
           <div className="chart-wrap-sm">
             <ResponsiveContainer>
               <BarChart data={insights.weeklyPattern} margin={{ top: 12, right: 14, left: 0, bottom: 6 }}>
-                <CartesianGrid strokeDasharray="4 4" stroke="#d8e7f2" />
-                <XAxis dataKey="dayLabel" tick={{ fill: "#48657a", fontSize: 12 }} />
-                <YAxis tick={{ fill: "#48657a", fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="4 4" stroke="#264a62" />
+                <XAxis dataKey="dayLabel" tick={{ fill: "#9bb7ca", fontSize: 12 }} />
+                <YAxis tick={{ fill: "#9bb7ca", fontSize: 12 }} />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="pressure" fill="#0f6fa8" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="positive" fill="#18794e" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="pressure" fill="#7cc6fe" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="positive" fill="#00c2a8" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -241,16 +242,16 @@ export default function DashboardPage() {
 
         <article className="panel stack">
           <div className="split">
-            <h2 className="feature-title">Team Signal Profile</h2>
-            <span className="meta">Composite KPI model (demo)</span>
+            <h2 className="feature-title">Signal profile</h2>
+            <span className="meta">Composite operational posture</span>
           </div>
           <div className="chart-wrap-sm">
             <ResponsiveContainer>
               <RadarChart data={insights.teamSignalProfile}>
-                <PolarGrid stroke="#c6dbeb" />
-                <PolarAngleAxis dataKey="metric" tick={{ fill: "#48657a", fontSize: 12 }} />
-                <PolarRadiusAxis tick={{ fill: "#6b8193", fontSize: 10 }} />
-                <Radar dataKey="value" stroke="#0f6fa8" fill="#0f6fa8" fillOpacity={0.36} />
+                <PolarGrid stroke="#355971" />
+                <PolarAngleAxis dataKey="metric" tick={{ fill: "#9bb7ca", fontSize: 12 }} />
+                <PolarRadiusAxis tick={{ fill: "#6b8aa0", fontSize: 10 }} />
+                <Radar dataKey="value" stroke="#7cc6fe" fill="#7cc6fe" fillOpacity={0.34} />
                 <Tooltip />
               </RadarChart>
             </ResponsiveContainer>

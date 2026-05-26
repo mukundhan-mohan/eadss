@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { adminMe } from "@/lib/api";
 
@@ -12,11 +12,21 @@ type DemoOutput = {
   recommendation: string;
 };
 
+type SignalCard = {
+  label: string;
+  value: string;
+  tone: "calm" | "alert" | "bright";
+};
+
+const sampleScenarios = [
+  "Our team has received multiple angry tickets today. Customers say payments are failing and they are frustrated.",
+  "Support queues are stable, but customers are confused about onboarding steps and asking repeated questions.",
+  "A major client reported a service outage and the account team is worried this will trigger churn.",
+];
+
 export default function HomePage() {
   const [isAuthed, setIsAuthed] = useState(false);
-  const [sampleText, setSampleText] = useState(
-    "Our team has received multiple angry tickets today. Customers say payments are failing and they are frustrated."
-  );
+  const [sampleText, setSampleText] = useState(sampleScenarios[0]);
   const [output, setOutput] = useState<DemoOutput | null>(null);
 
   useEffect(() => {
@@ -42,7 +52,7 @@ export default function HomePage() {
     const angerWords = ["angry", "frustrated", "furious", "outraged", "upset"];
     const sadnessWords = ["sad", "disappointed", "hopeless", "down"];
     const joyWords = ["happy", "great", "love", "excellent", "thanks"];
-    const riskWords = ["failing", "cancel", "escalate", "complaint", "urgent", "outage", "refund"];
+    const riskWords = ["failing", "cancel", "escalate", "complaint", "urgent", "outage", "refund", "churn"];
 
     const anxietyScore = anxietyWords.filter((w) => text.includes(w)).length;
     const angerScore = angerWords.filter((w) => text.includes(w)).length;
@@ -67,10 +77,10 @@ export default function HomePage() {
 
     const recommendation =
       risk === "high"
-        ? "Open an alert, route to incident channel, and notify on-call support lead."
+        ? "Open an alert, route to incident response, and place this in the human review queue immediately."
         : risk === "medium"
-          ? "Track this topic for 24h and review top evidence tickets."
-          : "No escalation required. Continue normal monitoring.";
+          ? "Monitor this pattern for 24h, review strongest evidence, and prepare a response playbook."
+          : "No escalation required. Keep tracking trend stability and customer recovery signals.";
 
     setOutput({
       sentiment,
@@ -81,148 +91,225 @@ export default function HomePage() {
     });
   }
 
+  const signalCards = useMemo<SignalCard[]>(
+    () => [
+      { label: "Decision latency", value: "<300 ms", tone: "bright" },
+      { label: "Review layer", value: "Human-in-the-loop", tone: "calm" },
+      { label: "Signal blend", value: "Emotion + Risk + Topic", tone: "alert" },
+    ],
+    []
+  );
+
   return (
     <main className="app-shell stack">
-      <section className="announce-ribbon">AI-powered product demo is now live across dashboard and alerts.</section>
+      <section className="home-hero">
+        <div className="home-hero-copy">
+          <span className="hero-kicker">Explainable AI for enterprise workflows</span>
+          <h1 className="home-hero-title">Turn human signals into explainable AI decisions.</h1>
+          <p className="home-hero-text">
+            EADSS helps teams detect risk, review AI outputs, and act on evidence-backed recommendations with human
+            oversight and full auditability.
+          </p>
 
-      <section className="hero-card stack">
-        <div className="hero-grid">
+          <div className="home-hero-actions">
+            <Link className="button" href={isAuthed ? "/try-now" : "/login"}>
+              Launch Workspace
+            </Link>
+            <Link className="button-secondary" href="/dashboard">
+              Explore Demo Dashboard
+            </Link>
+            <Link className="button-muted" href="/api-docs">
+              View API
+            </Link>
+          </div>
+
+          <div className="home-hero-trust">
+            <span>Explainable outputs</span>
+            <span>Human review built in</span>
+            <span>Auditable decision trails</span>
+          </div>
+        </div>
+
+        <div className="home-signal-wall">
+          <div className="signal-wall-header">
+            <span className="signal-dot" />
+            <span>Signal Room</span>
+          </div>
+
+          <div className="signal-card-grid">
+            {signalCards.map((card) => (
+              <article key={card.label} className={`signal-card signal-card-${card.tone}`}>
+                <div className="signal-card-label">{card.label}</div>
+                <div className="signal-card-value">{card.value}</div>
+              </article>
+            ))}
+          </div>
+
+          <div className="signal-strip">
+            <div className="signal-strip-head">
+              <span>Current priority</span>
+              <strong>Explainable decisions with evidence</strong>
+            </div>
+            <div className="signal-mini-bars" aria-hidden="true">
+              <span style={{ width: "72%" }} />
+              <span style={{ width: "48%" }} />
+              <span style={{ width: "88%" }} />
+              <span style={{ width: "61%" }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="story-grid">
+        <article className="story-card story-card-spotlight">
+          <div className="story-card-head">
+            <span className="badge">Why it stands out</span>
+            <h2 className="feature-title">Not just model output. AI decisions people can understand and trust.</h2>
+          </div>
+          <p className="feature-desc">
+            EADSS is designed for workflows where explainability matters as much as prediction quality, especially when
+            teams need reviewer oversight, evidence-backed escalation paths, and accountable AI behavior.
+          </p>
+          <div className="story-list">
+            <div className="story-list-item">
+              <strong>Evidence-first</strong>
+              <span>Every recommendation can be traced back to source text, inferred signals, and reviewer action.</span>
+            </div>
+            <div className="story-list-item">
+              <strong>Human-in-the-loop</strong>
+              <span>Teams can approve, edit, or reject AI conclusions instead of letting the model decide alone.</span>
+            </div>
+            <div className="story-list-item">
+              <strong>Enterprise-ready governance</strong>
+              <span>Use the same system for tickets, alerts, document Q&amp;A, and internal review workflows.</span>
+            </div>
+          </div>
+        </article>
+
+        <article className="story-card">
+          <div className="story-card-head">
+            <span className="badge">Core surfaces</span>
+            <h2 className="feature-title">Product layers</h2>
+          </div>
+          <div className="feature-grid">
+            <article className="feature-item">
+              <h3 className="feature-title">Explainable Risk Signals</h3>
+              <p className="feature-desc">Trace emotional and operational patterns into transparent, reviewable outputs.</p>
+            </article>
+            <article className="feature-item">
+              <h3 className="feature-title">Review Queue</h3>
+              <p className="feature-desc">Create a clear approval lane between AI recommendations and business decisions.</p>
+            </article>
+            <article className="feature-item">
+              <h3 className="feature-title">Evidence Retrieval</h3>
+              <p className="feature-desc">Upload enterprise documents and return answers with cited supporting evidence.</p>
+            </article>
+          </div>
+        </article>
+      </section>
+
+      <section className="panel stack">
+        <div className="split">
+          <div>
+            <span className="badge">Live interaction</span>
+            <h2 className="feature-title">Run a quick explainability demo</h2>
+          </div>
+          <span className="meta">A simple front-door demo of how EADSS frames AI outputs for human review.</span>
+        </div>
+
+        <div className="demo-lab-grid">
           <div className="stack">
-            <span className="badge">AI Emotion Intelligence Platform</span>
-            <h1 className="page-title">Emotionally-Aware Decision Support System</h1>
-            <p className="hero-copy">
-              Convert unstructured tickets, surveys, and complaints into explainable AI decisions
-              with emotion analytics, trend intelligence, and actionable alerts.
-            </p>
+            <label className="field">
+              <span>Scenario</span>
+              <select value={sampleText} onChange={(e) => setSampleText(e.target.value)}>
+                {sampleScenarios.map((scenario) => (
+                  <option key={scenario} value={scenario}>
+                    {scenario.slice(0, 72)}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="field">
+              <span>Raw support text</span>
+              <textarea
+                rows={7}
+                value={sampleText}
+                onChange={(e) => setSampleText(e.target.value)}
+                placeholder="Paste ticket, NPS comment, or survey response..."
+              />
+            </label>
+
             <div className="row">
-              <Link className="button" href={isAuthed ? "/try-now" : "/login"}>
-                Try Now
-              </Link>
-              <Link className="button-secondary" href="/dashboard">
-                View Public Demo
-              </Link>
-              <Link className="button-muted" href="/api-docs">
-                API Docs
-              </Link>
+              <button className="button" onClick={runDemo} disabled={!sampleText.trim()}>
+                Analyse Signal
+              </button>
             </div>
           </div>
 
-          <div className="hero-aside stack">
-            <div className="kpi-card">
-              <div className="kpi-label">Inference Latency</div>
-              <div className="kpi-value">&lt; 300ms</div>
+          <div className="demo-output-shell">
+            <div className="demo-output-head">
+              <span className="badge">Decision output</span>
+              <span className="meta">Explainable AI summary</span>
             </div>
-            <div className="kpi-card">
-              <div className="kpi-label">Signals Tracked</div>
-              <div className="kpi-value">Emotion + Topic + Risk</div>
-            </div>
-            <div className="kpi-card">
-              <div className="kpi-label">Explainability</div>
-              <div className="kpi-value">Evidence-first</div>
-            </div>
-          </div>
-        </div>
 
-        <div className="trust-row">
-          <span>Built for Support Ops</span>
-          <span>•</span>
-          <span>PII-safe ingestion</span>
-          <span>•</span>
-          <span>Auditable decisions</span>
-          <span>•</span>
-          <span>Production-ready APIs</span>
+            {output ? (
+              <div className="stack">
+                <div className="kpi-grid">
+                  <article className="kpi-card">
+                    <div className="kpi-label">Sentiment</div>
+                    <div className="kpi-value">{output.sentiment}</div>
+                  </article>
+                  <article className="kpi-card">
+                    <div className="kpi-label">Risk</div>
+                    <div className="kpi-value">{output.risk}</div>
+                  </article>
+                  <article className="kpi-card">
+                    <div className="kpi-label">Confidence</div>
+                    <div className="kpi-value">{Math.round(output.confidence * 100)}%</div>
+                  </article>
+                  <article className="kpi-card">
+                    <div className="kpi-label">Emotion stack</div>
+                    <div className="kpi-value">{output.emotions.join(", ")}</div>
+                  </article>
+                </div>
+                <div className="notice">
+                  <strong>Recommended action:</strong> {output.recommendation}
+                </div>
+              </div>
+            ) : (
+              <div className="empty">Run the demo to see a sample AI recommendation with risk framing.</div>
+            )}
+          </div>
         </div>
       </section>
 
       <section className="panel stack">
         <div className="split">
-          <h2 className="feature-title">Products</h2>
-          <span className="meta">Modular capabilities for enterprise workflows</span>
+          <div>
+            <span className="badge">Developer workflow</span>
+            <h2 className="feature-title">Designed to fit existing enterprise systems</h2>
+          </div>
+          <span className="meta">REST APIs for ingestion, explainability, review workflows, alerts, and PDF retrieval.</span>
         </div>
-        <div className="feature-grid">
-          <article className="feature-item">
-            <h3 className="feature-title">Emotion Analytics</h3>
-            <p className="feature-desc">Track anger, anxiety, sadness, and positive sentiment patterns over time.</p>
-          </article>
-          <article className="feature-item">
-            <h3 className="feature-title">Topic + Emotion Trends</h3>
-            <p className="feature-desc">Discover where emotional risk clusters by team, channel, and conversation topic.</p>
-          </article>
-          <article className="feature-item">
-            <h3 className="feature-title">Decision Alerts</h3>
-            <p className="feature-desc">Trigger explainable alerts with baseline context and evidence-backed recommendations.</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="panel stack">
-        <div className="split">
-          <h2 className="feature-title">Developer Experience</h2>
-          <span className="meta">Integrate quickly with REST APIs</span>
-        </div>
-        <pre className="inline-code">{`const res = await fetch("https://api.eadss.com/api/v1/ingest", {
+        <pre className="inline-code">{`const res = await fetch("https://api.eadss.com/api/v1/ingest/tickets", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
     "X-API-Key": process.env.EADSS_API_KEY,
   },
   body: JSON.stringify({
-    org_id: "sample-org",
-    source: "ticket",
-    channel: "support",
-    text: "Customer is frustrated. Payment failed again today."
+    enqueue_inference: true,
+    items: [
+      {
+        org_id: "sample-org",
+        source: "ticket",
+        channel: "support",
+        text: "Customer is frustrated. Payment failed again today."
+      }
+    ]
   })
 });`}</pre>
-      </section>
-
-      <section className="panel stack">
-        <div className="split">
-          <h2 className="feature-title">System Example</h2>
-          <span className="meta">Submit text to see modeled output</span>
-        </div>
-
-        <label className="field">
-          <span>Sample Support Text</span>
-          <textarea
-            rows={5}
-            value={sampleText}
-            onChange={(e) => setSampleText(e.target.value)}
-            placeholder="Paste ticket, NPS comment, or survey response..."
-          />
-        </label>
-
-        <div className="row">
-          <button className="button" onClick={runDemo} disabled={!sampleText.trim()}>
-            Analyze Text
-          </button>
-        </div>
-
-        {output && (
-          <div className="kpi-grid">
-            <article className="kpi-card">
-              <div className="kpi-label">Sentiment</div>
-              <div className="kpi-value">{output.sentiment}</div>
-            </article>
-            <article className="kpi-card">
-              <div className="kpi-label">Risk</div>
-              <div className="kpi-value">{output.risk}</div>
-            </article>
-            <article className="kpi-card">
-              <div className="kpi-label">Confidence</div>
-              <div className="kpi-value">{Math.round(output.confidence * 100)}%</div>
-            </article>
-            <article className="kpi-card">
-              <div className="kpi-label">Emotions</div>
-              <div className="kpi-value">{output.emotions.join(", ")}</div>
-            </article>
-          </div>
-        )}
-
-        {output && (
-          <div className="notice">
-            <strong>Recommendation:</strong> {output.recommendation}
-          </div>
-        )}
       </section>
     </main>
   );
