@@ -15,6 +15,20 @@ class GovRiskEvidenceOut(BaseModel):
     excerpt: str
 
 
+class GovRiskRelationOut(BaseModel):
+    source: str
+    relation: str
+    target: str
+
+
+class GovRiskReasoningOut(BaseModel):
+    question: str
+    answer: str
+    entities: list[str] = Field(default_factory=list)
+    relations: list[GovRiskRelationOut] = Field(default_factory=list)
+    chain: list[str] = Field(default_factory=list)
+
+
 class GovRiskHistoricalRecordOut(BaseModel):
     id: str
     title: str
@@ -39,6 +53,7 @@ class GovRiskAssessmentOut(BaseModel):
     recommended_action: str
     policy_match: str | None = None
     evidence: list[GovRiskEvidenceOut] = Field(default_factory=list)
+    reasoning: GovRiskReasoningOut | None = None
     matched_record_count: int = 0
     human_status: str
     reviewer_name: str | None = None

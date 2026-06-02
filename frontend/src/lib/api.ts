@@ -210,6 +210,20 @@ export type GovRiskEvidenceOut = {
   excerpt: string;
 };
 
+export type GovRiskRelationOut = {
+  source: string;
+  relation: string;
+  target: string;
+};
+
+export type GovRiskReasoningOut = {
+  question: string;
+  answer: string;
+  entities: string[];
+  relations: GovRiskRelationOut[];
+  chain: string[];
+};
+
 export type GovRiskAssessmentOut = {
   id: string;
   incident_id: string;
@@ -220,6 +234,7 @@ export type GovRiskAssessmentOut = {
   recommended_action: string;
   policy_match?: string | null;
   evidence: GovRiskEvidenceOut[];
+  reasoning?: GovRiskReasoningOut | null;
   matched_record_count: number;
   human_status: "pending" | "approved" | "edited" | "rejected" | string;
   reviewer_name?: string | null;

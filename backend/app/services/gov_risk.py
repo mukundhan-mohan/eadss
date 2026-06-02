@@ -66,6 +66,7 @@ class GovRiskAnalysis:
     policy_match: str | None
     evidence: list[dict]
     matched_record_count: int
+    reasoning: dict
 
 
 def normalize_text(text: str) -> str:
@@ -201,6 +202,70 @@ def build_reason(
     return " ".join(parts)
 
 
+def extract_reasoning_graph(
+    *,
+    incident_text: str,
+    sector: str,
+    department: str,
+    risk_level: str,
+    matched_record_count: int,
+    policy_match: str | None,
+) -> dict:
+    lowered = incident_text.lower()
+    entities: list[str] = []
+    relations: list[dict] = []
+
+    def add_entity(name: str) -> None:
+        if name not in entities:
+            entities.append(name)
+
+    def add_relation(source: str, relation: str, target: str) -> None:
+        add_entity(source)
+        add_entity(target)
+        edge = {"source": source, "relation": relation, "target": target}
+        if edge not in relations:
+            relations.append(edge)
+
+    sector_name = sector.strip() or "Operational Context"
+    department_name = department.strip() or "Department"
+    incident_entity = "Supplier" if "supplier" in lowered else "Incident"
+    if "data access" in lowered:
+        incident_entity = "Data Access Failure"
+    elif "outage" in lowered:
+        incident_entity = "Service Outage"
+
+    add_relation(incident_entity, "impacts", sector_name)
+    add_relation(sector_name, "increases", "Operational Risk")
+    add_relation("Operational Risk", "affects", "Service Delivery")
+
+    if department_name:
+        add_relation(sector_name, "pressures", department_name)
+
+    if matched_record_count > 0:
+        add_relation("Historical Incidents", "reinforces", "Operational Risk")
+
+    if policy_match:
+        add_relation("Policy Controls", "flags", incident_entity)
+
+    if risk_level in {"high", "critical"}:
+        add_relation("Operational Risk", "requires", "Governance Review")
+
+    chain = [f"{edge['source']} -> {edge['relation']} -> {edge['target']}" for edge in relations]
+    answer = "This risk is high because the incident propagates through a chain of operational dependencies."
+    if matched_record_count > 0:
+        answer += f" Similar incidents have appeared {matched_record_count} time(s), which reinforces recurrence risk."
+    if policy_match:
+        answer += " Policy controls also align with the issue, increasing governance urgency."
+
+    return {
+        "question": "Why is this risk high?",
+        "answer": answer,
+        "entities": entities,
+        "relations": relations,
+        "chain": chain,
+    }
+
+
 def analyze_gov_risk(
     db: Session,
     *,
@@ -238,6 +303,15 @@ def analyze_gov_risk(
         title = top.get("document_title") or "Policy document"
         policy_match = f"{title} - Section near page {top['page_number']}"
 
+    reasoning = extract_reasoning_graph(
+        incident_text=incident_text,
+        sector=sector,
+        department=department,
+        risk_level=risk_level,
+        matched_record_count=len(matches),
+        policy_match=policy_match,
+    )
+
     return GovRiskAnalysis(
         risk_level=risk_level,
         risk_score=risk_score,
@@ -251,4 +325,5 @@ def analyze_gov_risk(
         policy_match=policy_match,
         evidence=evidence,
         matched_record_count=len(matches),
+        reasoning=reasoning,
     )

@@ -550,6 +550,37 @@ export default function GovRiskPage({ params }: { params: { orgId: string } }) {
                           ))}
                         </div>
                       )}
+                      {assessment.reasoning && (
+                        <div className="stack">
+                          <span className="meta">{assessment.reasoning.question}</span>
+                          <p className="review-text">{assessment.reasoning.answer}</p>
+                          <div className="knowledge-graph-card">
+                            <div className="knowledge-graph-head">
+                              <span className="badge">Reasoning chain</span>
+                              <span className="meta">{assessment.reasoning.entities.length} entities</span>
+                            </div>
+                            <div className="knowledge-chain">
+                              {assessment.reasoning.relations.map((edge, index) => (
+                                <div key={`${edge.source}-${edge.relation}-${edge.target}-${index}`} className="knowledge-edge">
+                                  <div className="knowledge-node">
+                                    <span className="knowledge-node-label">Source</span>
+                                    <strong>{edge.source}</strong>
+                                  </div>
+                                  <div className="knowledge-link">
+                                    <span className="knowledge-link-line" aria-hidden="true" />
+                                    <span className="knowledge-arrow">{edge.relation}</span>
+                                    <span className="knowledge-link-line" aria-hidden="true" />
+                                  </div>
+                                  <div className="knowledge-node knowledge-node-target">
+                                    <span className="knowledge-node-label">Target</span>
+                                    <strong>{edge.target}</strong>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     <div className="form-grid">

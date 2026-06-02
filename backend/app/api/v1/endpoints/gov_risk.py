@@ -19,7 +19,7 @@ from app.schemas.gov_risk import (
     GovRiskIncidentOut,
     SubmitGovRiskReviewIn,
 )
-from app.services.gov_risk import analyze_gov_risk
+from app.services.gov_risk import analyze_gov_risk, extract_reasoning_graph
 
 router = APIRouter(prefix="/gov-risk", dependencies=[Depends(require_api_key)])
 
@@ -45,6 +45,16 @@ def to_assessment_out(assessment: GovRiskAssessment) -> GovRiskAssessmentOut:
         recommended_action=assessment.recommended_action,
         policy_match=assessment.policy_match,
         evidence=assessment.evidence or [],
+        reasoning=extract_reasoning_graph(
+            incident_text=assessment.incident.incident_text if assessment.incident else "",
+            sector=assessment.incident.sector if assessment.incident else "",
+            department=assessment.incident.department if assessment.incident else "",
+            risk_level=assessment.risk_level,
+            matched_record_count=assessment.matched_record_count,
+            policy_match=assessment.policy_match,
+        )
+        if assessment.incident
+        else None,
         matched_record_count=assessment.matched_record_count,
         human_status=assessment.human_status,
         reviewer_name=assessment.reviewer_name,

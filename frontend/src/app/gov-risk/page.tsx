@@ -23,7 +23,7 @@ const featureSteps = [
 
 const outputCards = [
   { label: "Risk level", value: "High", tone: "alert" as const },
-  { label: "Policy match", value: "Data Governance §4.2", tone: "bright" as const },
+  { label: "Policy match", value: "Data Governance section 4.2", tone: "bright" as const },
   { label: "Human status", value: "Pending approval", tone: "calm" as const },
 ];
 

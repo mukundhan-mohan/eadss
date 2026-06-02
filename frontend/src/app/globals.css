@@ -902,6 +902,99 @@ pre {
     rgba(255, 255, 255, 0.03);
 }
 
+.knowledge-graph-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(124, 198, 254, 0.18);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at top right, rgba(124, 198, 254, 0.08), transparent 22%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.knowledge-graph-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.knowledge-chain {
+  display: grid;
+  gap: 10px;
+}
+
+.knowledge-edge {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.knowledge-node {
+  display: grid;
+  gap: 4px;
+  min-height: 84px;
+  align-content: center;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.knowledge-node-target {
+  background:
+    linear-gradient(180deg, rgba(0, 194, 168, 0.06) 0%, rgba(255, 255, 255, 0.04) 100%);
+}
+
+.knowledge-node-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.knowledge-link {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.knowledge-link-line {
+  display: block;
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(180deg, rgba(124, 198, 254, 0.18), rgba(124, 198, 254, 0.56));
+}
+
+.knowledge-arrow {
+  border: 1px solid rgba(124, 198, 254, 0.26);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  color: #9fd4fb;
+  background: rgba(124, 198, 254, 0.08);
+}
+
+@media (max-width: 720px) {
+  .knowledge-edge {
+    grid-template-columns: 1fr;
+  }
+
+  .knowledge-link {
+    min-width: 0;
+  }
+
+  .knowledge-link-line {
+    width: 18px;
+    height: 2px;
+  }
+}
+
 .docs-frame-shell {
   border: 1px solid var(--line);
   border-radius: 22px;
