@@ -156,6 +156,54 @@ export default function GovRiskFeaturePage() {
         </div>
       </section>
 
+      <section className="panel stack">
+        <div className="split">
+          <div>
+            <span className="badge">Explainability view</span>
+            <h2 className="feature-title">Explainable Risk Intelligence</h2>
+          </div>
+          <span className="meta">A concrete example of how GovRisk justifies a recommendation.</span>
+        </div>
+
+        <div className="story-grid">
+          <article className="story-card story-card-spotlight stack">
+            <div>
+              <span className="signal-card-label">Risk Score</span>
+              <div className="page-title" style={{ marginTop: 8 }}>82%</div>
+            </div>
+
+            <div className="stack">
+              <strong>Why?</strong>
+              <div className="story-list">
+                <div className="story-list-item">
+                  <span>Policy violation detected</span>
+                </div>
+                <div className="story-list-item">
+                  <span>Similar incident occurred 4 times</span>
+                </div>
+                <div className="story-list-item">
+                  <span>Linked operational dependency identified</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article className="story-card stack">
+            <div>
+              <strong>Evidence</strong>
+            </div>
+            <div className="story-list">
+              <div className="story-list-item">
+                <span>Policy section 4.2</span>
+              </div>
+              <div className="story-list-item">
+                <span>Incident #381</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section className="demo-lab-grid">
         <article className="panel stack">
           <div className="story-card-head">
