@@ -147,10 +147,13 @@ main {
 }
 
 .badge {
+  display: inline-flex;
+  align-items: center;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   padding: 6px 12px;
   font-size: 0.83rem;
+  line-height: 1;
   color: var(--muted);
   background: rgba(255, 255, 255, 0.04);
 }
@@ -779,6 +782,18 @@ pre {
   font-family: var(--font-display), "Trebuchet MS", sans-serif;
   font-size: 1.34rem;
   line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.signal-card-grid-compact .signal-card {
+  min-height: 112px;
+}
+
+.signal-card-grid-compact .signal-card-value {
+  font-size: 0.98rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
 .signal-strip {

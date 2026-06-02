@@ -65,7 +65,7 @@ export default function GovRiskFeaturePage() {
             <span>GovRisk output</span>
           </div>
 
-          <div className="signal-card-grid">
+          <div className="signal-card-grid signal-card-grid-compact">
             {outputCards.map((card) => (
               <article key={card.label} className={`signal-card signal-card-${card.tone}`}>
                 <div className="signal-card-label">{card.label}</div>
