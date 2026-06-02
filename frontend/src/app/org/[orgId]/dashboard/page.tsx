@@ -243,6 +243,9 @@ export default function OrgDashboard({ params }: { params: { orgId: string } }) 
           </p>
         </div>
         <div className="control-hero-actions">
+          <Link className="button-muted" href={`/org/${orgId}/gov-risk`}>
+            Gov Risk
+          </Link>
           <Link className="button-muted" href={`/org/${orgId}/pdf-qa`}>
             PDF Q&A
           </Link>

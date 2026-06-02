@@ -233,6 +233,10 @@ main {
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
 }
 
+.gov-risk-grid {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
 .feature-item {
   border: 1px solid var(--line);
   border-radius: 14px;

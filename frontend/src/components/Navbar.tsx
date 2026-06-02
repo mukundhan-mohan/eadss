@@ -8,6 +8,7 @@ import LogoMark from "@/components/LogoMark";
 const baseItems = [
   { href: "/", label: "Home" },
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/gov-risk", label: "GovRisk" },
   { href: "/alerts", label: "Alerts" },
   { href: "/api-docs", label: "API Docs" },
 ];

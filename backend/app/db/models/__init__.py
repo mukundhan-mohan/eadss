@@ -13,6 +13,7 @@ from app.db.models.admin_user import AdminUser
 from app.db.models.admin_membership import AdminMembership
 from app.db.models.pdf_document import PdfDocument
 from app.db.models.pdf_chunk import PdfChunk
+from app.db.models.gov_risk import GovRiskAssessment, GovRiskHistoricalRecord, GovRiskIncident
 
 __all__ = ["Document", 
            "AuditLog", 
@@ -33,4 +34,7 @@ __all__ = ["Document",
            "AdminMembership",
            "PdfDocument",
            "PdfChunk",
+           "GovRiskIncident",
+           "GovRiskHistoricalRecord",
+           "GovRiskAssessment",
            ]

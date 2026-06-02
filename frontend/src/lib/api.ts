@@ -201,6 +201,84 @@ export type ReviewQueueResponse = {
   items: ReviewQueueItemOut[];
 };
 
+export type GovRiskEvidenceOut = {
+  document_id: string;
+  document_title?: string | null;
+  page_number: number;
+  chunk_index: number;
+  score: number;
+  excerpt: string;
+};
+
+export type GovRiskAssessmentOut = {
+  id: string;
+  incident_id: string;
+  status: string;
+  risk_level: "low" | "medium" | "high" | "critical" | string;
+  risk_score: number;
+  reason: string;
+  recommended_action: string;
+  policy_match?: string | null;
+  evidence: GovRiskEvidenceOut[];
+  matched_record_count: number;
+  human_status: "pending" | "approved" | "edited" | "rejected" | string;
+  reviewer_name?: string | null;
+  reviewer_feedback?: string | null;
+  approved_risk_level?: string | null;
+  approved_risk_score?: number | null;
+  approved_recommended_action?: string | null;
+  reviewed_at?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type GovRiskAuditEntryOut = {
+  id: string;
+  actor?: string | null;
+  action: string;
+  created_at: string;
+  meta: Record<string, any>;
+};
+
+export type GovRiskIncidentOut = {
+  id: string;
+  org_id: string;
+  title: string;
+  incident_text: string;
+  sector: string;
+  department: string;
+  severity: string;
+  incident_date?: string | null;
+  location?: string | null;
+  status: string;
+  latest_assessment?: GovRiskAssessmentOut | null;
+  history: GovRiskAuditEntryOut[];
+  created_at: string;
+  updated_at: string;
+};
+
+export type GovRiskIncidentListResponse = {
+  items: GovRiskIncidentOut[];
+};
+
+export type GovRiskHistoricalRecordOut = {
+  id: string;
+  title: string;
+  summary: string;
+  sector: string;
+  department?: string | null;
+  severity: string;
+  location?: string | null;
+  event_date?: string | null;
+  outcome?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type GovRiskHistoricalRecordListResponse = {
+  items: GovRiskHistoricalRecordOut[];
+};
+
 export function getDocuments(params: {
   org_id?: string;
   team_id?: string;
@@ -318,6 +396,62 @@ export function submitInferenceReview(
   }
 ) {
   return apiFetch<InferenceReviewOut>(`/api/v1/reviews/documents/${documentId}`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function listGovRiskIncidents(limit = 12) {
+  return apiFetch<GovRiskIncidentListResponse>(`/api/v1/gov-risk/incidents?limit=${limit}`);
+}
+
+export function createGovRiskIncident(payload: {
+  title: string;
+  incident_text: string;
+  sector: string;
+  department: string;
+  severity: "low" | "medium" | "high" | "critical";
+  incident_date?: string;
+  location?: string;
+}) {
+  return apiFetch<GovRiskIncidentOut>(`/api/v1/gov-risk/incidents`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function listGovRiskHistoricalRecords(limit = 12) {
+  return apiFetch<GovRiskHistoricalRecordListResponse>(`/api/v1/gov-risk/historical-records?limit=${limit}`);
+}
+
+export function createGovRiskHistoricalRecord(payload: {
+  title: string;
+  summary: string;
+  sector: string;
+  department?: string;
+  severity: "low" | "medium" | "high" | "critical";
+  location?: string;
+  event_date?: string;
+  outcome?: string;
+}) {
+  return apiFetch<GovRiskHistoricalRecordOut>(`/api/v1/gov-risk/historical-records`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function submitGovRiskReview(
+  incidentId: string,
+  payload: {
+    status: "approved" | "edited" | "rejected";
+    reviewer_name?: string;
+    feedback?: string;
+    approved_risk_level?: string;
+    approved_risk_score?: number;
+    approved_recommended_action?: string;
+  }
+) {
+  return apiFetch<GovRiskAssessmentOut>(`/api/v1/gov-risk/incidents/${incidentId}/review`, {
     method: "POST",
     body: JSON.stringify(payload),
   });

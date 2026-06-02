@@ -11,6 +11,7 @@ from app.api.v1.endpoints.usage import router as usage_router
 from app.api.v1.endpoints.admin_auth import router as admin_auth_router
 from app.api.v1.endpoints.pdf_rag import router as pdf_rag_router
 from app.api.v1.endpoints.reviews import router as reviews_router
+from app.api.v1.endpoints.gov_risk import router as gov_risk_router
 
 api_router = APIRouter()
 
@@ -25,3 +26,4 @@ api_router.include_router(usage_router, tags=["usage"])
 api_router.include_router(admin_auth_router, tags=["admin"])
 api_router.include_router(pdf_rag_router, tags=["pdf-rag"])
 api_router.include_router(reviews_router, tags=["reviews"])
+api_router.include_router(gov_risk_router, tags=["gov-risk"])

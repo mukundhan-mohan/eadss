@@ -115,7 +115,10 @@ export default function HomePage() {
             <Link className="button" href={isAuthed ? "/try-now" : "/login"}>
               Launch Workspace
             </Link>
-            <Link className="button-secondary" href="/dashboard">
+            <Link className="button-secondary" href="/gov-risk">
+              Explore GovRisk
+            </Link>
+            <Link className="button-muted" href="/dashboard">
               Explore Demo Dashboard
             </Link>
             <Link className="button-muted" href="/api-docs">
